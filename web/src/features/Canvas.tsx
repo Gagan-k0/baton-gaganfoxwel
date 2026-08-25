@@ -1,3 +1,5 @@
+// Copyright (C) 2026 Rakshan Shetty
+// SPDX-License-Identifier: AGPL-3.0-or-later
 /* ============================================================
    BATON — Canvas / Orchestration view (ported from canvas.jsx)
    Draggable session nodes, merge-risk edges from shared conflict
@@ -245,7 +247,7 @@ export function CanvasView({
   );
 }
 
-function Minimap({ sessions, positions, view, wrapRef }: { sessions: StatusRow[] | null; positions: Layout; view: ViewState; wrapRef: React.RefObject<HTMLDivElement> }) {
+function Minimap({ sessions, positions, view, wrapRef }: { sessions: StatusRow[] | null; positions: Layout; view: ViewState; wrapRef: React.RefObject<HTMLDivElement | null> }) {
   if (!sessions?.length) return null;
   const xs = sessions.map((s) => positions[s.slug].x), ys = sessions.map((s) => positions[s.slug].y);
   const minX = Math.min(...xs) - 40, maxX = Math.max(...xs) + NODE_W + 40;

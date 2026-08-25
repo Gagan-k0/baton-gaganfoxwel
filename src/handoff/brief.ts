@@ -1,3 +1,5 @@
+// Copyright (C) 2026 Rakshan Shetty
+// SPDX-License-Identifier: AGPL-3.0-or-later
 /**
  * Handoff brief generation — the knowledge pack a cheaper agent picks up with
  * `baton take`. Not a raw history dump: a curated HANDOFF.md with objective,
@@ -9,18 +11,26 @@ import { parseFrontmatter } from '../util/frontmatter.js';
 import { readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { gitTry } from '../util/exec.js';
+import { resolveAuthor } from '../identity.js';
 import type { Task } from '../store.js';
 import { loadKb } from '../kb/state.js';
 import { queryGraph } from '../kb/graphify.js';
 import { memoryBriefSection, recallMemories } from '../memory.js';
 import { sessionContextFor, type SessionContext } from './claude-session.js';
 import { loadProgress } from './progress-ledger.js';
+import { loadReview, openFindings, REVIEW_AXES } from '../reviews.js';
 import { guardrailLines } from './guardrails.js';
 
 export interface HandoffMeta {
   baton: number;
+  /** The agent handing off (WHAT). Paired with `author` below (WHO). */
   from: string;
   to: string;
+  /** WHO produced this brief. `from`/`to` name the agent tools, which on a
+   *  shared hub are the same string for everyone — so a brief passed between
+   *  two people records neither of them without this. Pre-author briefs and
+   *  hand-written ones read as `unknown`. */
+  author?: string;
   /** Suggested model for the receiving CLI (advisory — Baton can't enforce it). */
   model?: string;
   status: 'ready' | 'in-progress' | 'done';
@@ -54,6 +64,26 @@ function estCostUsd(tokens: number): number {
  * excerpt and command log on top when the brief is already large.
  */
 export const HANDOFF_MAX_CHARS = 4500;
+
+/**
+ * A brief is a snapshot: its plan, diffstat and memory section freeze at
+ * `baton pass` time. When commits have landed in the checkout since, the
+ * receiver must be told the ground truth has moved — served verbatim, a
+ * days-old brief reads as the current state of the work. Returns null when
+ * fresh, or unknowable (no created stamp, git unreadable): a warning we
+ * cannot substantiate is noise, not safety.
+ */
+export async function briefStalenessWarning(cwd: string, created: string | undefined): Promise<string | null> {
+  if (!created || Number.isNaN(Date.parse(created))) return null;
+  const r = await gitTry(['-C', cwd, 'rev-list', '--count', `--since=${created}`, 'HEAD']);
+  if (!r.ok) return null;
+  const n = Number(r.stdout.trim());
+  if (!Number.isFinite(n) || n === 0) return null;
+  return (
+    `⚠ STALE BRIEF — written ${created.slice(0, 10)}; ${n} commit${n === 1 ? ' has' : 's have'} landed here since.\n` +
+    `Trust \`git log\` and \`git diff\` for the current state — this brief's plan and "state of the work" predate them.`
+  );
+}
 
 /** A rendered brief section plus how droppable it is under budget. */
 export interface BriefSection {
@@ -115,7 +145,17 @@ export async function buildBrief(
   // ISS-06: for a non-Claude agent there is no transcript, so plan/notes/files
   // used to vanish. Merge the agent-agnostic progress ledger (save_progress) —
   // preferring the richer transcript per field when it exists, else the ledger.
-  const ledger = await loadProgress(opts.root, task.slug).catch(() => null);
+  let ledger = await loadProgress(opts.root, task.slug).catch(() => null);
+  // A ledger that predates the worktree's last commit describes work that has
+  // since landed — an abandoned ledger would otherwise resurface in a much
+  // later brief as if it were the current plan. Git ground truth (below) is
+  // what the receiver should trust; the stale ledger adds only misdirection.
+  if (ledger) {
+    const lastCommit = await gitTry(['-C', task.worktreePath, 'log', '-1', '--format=%cI']);
+    if (lastCommit.ok && lastCommit.stdout && Date.parse(ledger.updatedAt) < Date.parse(lastCommit.stdout.trim())) {
+      ledger = null;
+    }
+  }
   const todos = (session?.todos.length ? session.todos : ledger?.plan) ?? [];
   const notes = (session?.lastNotes.length ? session.lastNotes : ledger?.notes) ?? [];
   const filesEdited = (session?.filesEdited.length ? session.filesEdited : ledger?.filesEdited) ?? [];
@@ -135,6 +175,7 @@ export async function buildBrief(
     baton: 1,
     from: opts.from ?? 'claude',
     to: opts.to,
+    author: await resolveAuthor(opts.root),
     ...(opts.model ? { model: opts.model } : {}),
     status: 'ready',
     created: new Date().toISOString(),
@@ -180,6 +221,32 @@ export async function buildBrief(
   // git ground truth — kept longest of the optional sections (ISS-08 prefers
   // verifiable state over prose).
   push(stateLines, 1);
+
+  // Open review findings. A recorded review is only half the fix: the next
+  // agent has to MEET the findings without knowing to go looking for them.
+  // Anything still open is inherited work, so it ranks just under git ground
+  // truth — above the softer prose sections, below the plan.
+  // Grouped by axis and never ranked across axes, same rule as everywhere else.
+  const review = await loadReview(opts.root, task.slug).catch(() => null);
+  const openFinds = openFindings(review);
+  if (review && openFinds.length) {
+    const lines = [
+      '## Open review findings',
+      `Reviewed against \`${review.fixedPoint}\` at \`${review.head.slice(0, 9)}\`. ` +
+      `Full detail: \`baton review show ${task.slug}\` · close one out: \`baton review resolve ${task.slug} <id>\`.`,
+    ];
+    for (const axis of REVIEW_AXES) {
+      const inAxis = openFinds.filter((f) => f.axis === axis);
+      if (!inAxis.length) continue;
+      lines.push('', `### ${axis[0].toUpperCase()}${axis.slice(1)}`);
+      for (const f of inAxis) {
+        const where = f.file ? ` (${f.file}${f.line ? `:${f.line}` : ''})` : '';
+        const route = f.route ? ` → ${f.route}` : '';
+        lines.push(`- [ ] \`${f.id}\` ${f.title}${where} — ${f.source}${route}`);
+      }
+    }
+    push(lines.join('\n'), 2);
+  }
 
   const hasContext = !!(session || todos.length || notes.length || filesEdited.length);
   if (hasContext) {

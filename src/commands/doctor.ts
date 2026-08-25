@@ -1,14 +1,20 @@
+// Copyright (C) 2026 Rakshan Shetty
+// SPDX-License-Identifier: AGPL-3.0-or-later
 /**
  * `baton doctor` — audit junk (orphaned worktrees, branches, tmux sessions,
  * leaked temp files). `baton clean [--fix]` — reclaim it (dry-run by default).
  */
-import { readdir, rm, stat } from 'node:fs/promises';
+import { readdir, realpath, rm, stat } from 'node:fs/promises';
 import { join } from 'node:path';
-import { gitRoot } from '../git.js';
 import { auditJunk, cleanJunk, type AuditReport, type JunkItem } from '../cleanup.js';
 import { scanDocSprawl, listRepoFiles, lastCommitDate, type SprawlFinding } from '../kb/sprawl.js';
-import { batonDir, loadTasks, resolveBatonRoot } from '../store.js';
+import { batonDir, loadTasks, activeBatonRoot } from '../store.js';
 import { loadKb } from '../kb/state.js';
+import { auditKb, type KbFinding } from '../kb/health.js';
+import {
+  AGENTS, CUSTOM_AGENT_IDS, CUSTOM_AGENT_ISSUES, customAgentsPath,
+  loadProjectAgents, projectAgentsPath, type AgentDef,
+} from '../agents/registry.js';
 
 const KIND_LABEL: Record<JunkItem['kind'], string> = {
   'orphan-worktree-task': 'orphaned worktree (stale task)',
@@ -33,15 +39,65 @@ function printReport(report: AuditReport): void {
   }
 }
 
+const KB_GLYPH: Record<KbFinding['level'], string> = { error: '✗', warn: '⚠', info: '·' };
+
+/**
+ * The KB section. Printed even when it is healthy, because the failure this
+ * exists to catch is silent: the graph answers with nothing and looks fine.
+ */
+function printKb(findings: KbFinding[]): void {
+  if (!findings.length) {
+    console.log('✓ knowledge base looks healthy');
+    return;
+  }
+  console.log('Knowledge base:\n');
+  for (const f of findings) {
+    console.log(`  ${KB_GLYPH[f.level]} ${f.message}`);
+    if (f.fix) console.log(`      → ${f.fix}`);
+  }
+}
+
 export async function doctorCmd(opts: { docs?: boolean; fix?: boolean } = {}): Promise<void> {
   if (opts.docs) return doctorDocsCmd();
-  const report = await auditJunk(await gitRoot());
+  const report = await auditJunk(await activeBatonRoot());
   printReport(report);
   if (report.items.length) {
     const dirty = report.items.some((i) => i.blocked === 'dirty');
     console.log(`\n  Reclaim with: baton clean --fix${dirty ? '   (add --force to remove worktrees with uncommitted changes)' : ''}`);
   }
-  await reportShadowBatons(await resolveBatonRoot(), !!opts.fix);
+  // activeBatonRoot, matching the line above. resolveBatonRoot alone is
+  // defeated by the very thing reportShadowBatons exists to find: inside a
+  // worktree polluted with a shadow `.baton`, its upward walk stops AT that
+  // shadow, so auditKb read the worktree's empty store and announced "no
+  // knowledge base in this repo" for a perfectly healthy hub — then the shadow
+  // scan, handed the same wrong root, stayed silent about the shadow that
+  // caused it. The suggested fix would have created a second KB in a
+  // throwaway checkout.
+  const root = await activeBatonRoot();
+  console.log('');
+  printKb(await auditKb(root));
+  await reportShadowBatons(root, !!opts.fix);
+  printCustomAgents(root);
+}
+
+/** Custom agents (~/.baton/agents.json + <root>/.baton/agents.json,
+ *  src/agents/registry.ts). Silent when both files are absent — that is the
+ *  normal case, not a finding. A file that half-loaded must say so HERE,
+ *  because the load itself never throws. */
+function printCustomAgents(root: string): void {
+  const proj = loadProjectAgents(root);
+  if (!CUSTOM_AGENT_IDS.length && !CUSTOM_AGENT_ISSUES.length && !proj.ids.length && !proj.issues.length) return;
+  console.log('\nCustom agents:\n');
+  const printAgent = (a: AgentDef, scope: string): void => {
+    const modes = [a.headless ? 'headless' : '', a.interactive ? 'interactive' : ''].filter(Boolean).join(' + ') || 'detection-only';
+    console.log(`  ✓ ${a.label} (${a.id}) — binary '${a.binary}', ${modes}${scope}`);
+  };
+  for (const id of CUSTOM_AGENT_IDS) printAgent(AGENTS[id], '');
+  for (const id of proj.ids) printAgent(proj.defs[id], '  [this project]');
+  for (const issue of CUSTOM_AGENT_ISSUES) console.log(`  ✗ ${issue}`);
+  for (const issue of proj.issues) console.log(`  ✗ [this project] ${issue}`);
+  if (CUSTOM_AGENT_ISSUES.length) console.log(`\n  Fix ${customAgentsPath()} and re-run — entries load again on the next start.`);
+  if (proj.issues.length) console.log(`\n  Fix ${projectAgentsPath(root)} and re-run — the project file reloads on every use, no restart needed.`);
 }
 
 /**
@@ -69,12 +125,20 @@ const exists = (p: string): Promise<boolean> => stat(p).then(() => true, () => f
  * `removable` only when it holds no durable state — the ephemeral `history.db`
  * (30-min-TTL presence) and locks don't count; tasks, memory facts, and a
  * project `kb.json` do, and keep it report-only.
+ *
+ * A project whose path IS the hub root is skipped: in a single-repo setup
+ * `baton kb init` registers the repo itself as the one project, and its
+ * `.baton` is the hub store — not a shadow of it. Reporting it told the user to
+ * delete their own tasks and memory. Compared through realpath so a symlinked
+ * or `/var`-vs-`/private/var` path can't slip past the check.
  */
 export async function scanShadowBatons(hubRoot: string): Promise<ShadowBaton[]> {
   const kb = await loadKb(hubRoot);
   if (!kb || kb.projects.length === 0) return [];
+  const hubReal = await realpath(hubRoot).catch(() => hubRoot);
   const shadows: ShadowBaton[] = [];
   for (const p of kb.projects) {
+    if ((await realpath(p.path).catch(() => p.path)) === hubReal) continue; // the hub's own store
     const shadow = batonDir(p.path);
     if (!(await exists(shadow))) continue;
     const tasks = (await loadTasks(p.path)).length;
@@ -154,8 +218,15 @@ const SPRAWL_LABEL: Record<SprawlFinding['kind'], string> = {
  * (see sprawl.ts for why bulk import can't be auto-applied).
  */
 export async function doctorDocsCmd(): Promise<void> {
-  const root = await gitRoot();
-  const findings = scanDocSprawl(await listRepoFiles(root));
+  const root = await activeBatonRoot();
+  const files = await listRepoFiles(root);
+  if (files === null) {
+    // Say we could not look, rather than that there was nothing to see.
+    console.log(`· cannot scan ${root} — it is not a git repository (a multi-repo hub root usually isn't).`);
+    console.log('  Run `baton doctor --docs` from inside each project instead.');
+    return;
+  }
+  const findings = scanDocSprawl(files);
   if (!findings.length) {
     console.log('✓ no doc sprawl found — the knowledge base is the single source');
     return;
@@ -174,7 +245,7 @@ export async function doctorDocsCmd(): Promise<void> {
 }
 
 export async function cleanCmd(opts: { fix?: boolean; force?: boolean } = {}): Promise<void> {
-  const root = await gitRoot();
+  const root = await activeBatonRoot();
   const report = await auditJunk(root);
   if (!report.items.length) {
     console.log('✓ no junk found — nothing to clean');

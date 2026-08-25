@@ -1,3 +1,5 @@
+// Copyright (C) 2026 Rakshan Shetty
+// SPDX-License-Identifier: AGPL-3.0-or-later
 import { describe, it, expect } from 'vitest';
 import { mcpServers, mcpServersGemini, codexSnippet } from '../src/kb/mcp.js';
 
@@ -57,5 +59,8 @@ describe('mcpServers hub collapse (P11)', () => {
     const toml = codexSnippet(hubState, opts);
     expect(toml).toContain('[mcp_servers."graphify-merged"]');
     expect(toml).not.toContain('[mcp_servers."graphify-api"]');
+    // Codex bridge still hits the shared pool URL (not a local uv spawn)
+    expect(toml).toContain('mcp-bridge');
+    expect(toml).not.toContain('command = "uv"');
   });
 });

@@ -13,7 +13,7 @@ export default function OpenSourceCTA() {
       <div
         aria-hidden="true"
         className="pointer-events-none absolute left-1/2 top-1/2 h-80 w-[40rem] max-w-full -translate-x-1/2 -translate-y-1/2 rounded-full blur-3xl"
-        style={{ background: "radial-gradient(ellipse, #ff9d2e22, transparent 70%)" }}
+        style={{ background: "radial-gradient(ellipse, color-mix(in oklab, var(--color-amber) 13%, transparent), transparent 70%)" }}
       />
 
       <Reveal className="relative">
@@ -22,12 +22,13 @@ export default function OpenSourceCTA() {
           Baton is <span className="amber-gradient">open source.</span>
         </h2>
         <p className="mx-auto mt-6 max-w-xl text-pretty text-lg leading-relaxed text-muted">
-          MIT licensed, zero-dependency daemon, runs entirely on your machine.
-          Clone it, read every line, and pass it on.
+          AGPL-3.0 licensed, zero-dependency daemon, runs entirely on your machine.
+          Clone it, read every line, and pass it on — and it stays open: anyone who
+          ships or hosts a modified Baton owes their users the source too.
         </p>
 
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3 font-mono text-xs">
-          <Stat label="license" value="MIT" />
+          <Stat label="license" value="AGPL-3.0" />
           <Stat label="daemon" value="zero-dep" />
           <Stat label="node" value="≥ 20" />
         </div>
@@ -37,7 +38,7 @@ export default function OpenSourceCTA() {
             href={REPO_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="glow-amber rounded-full bg-amber px-6 py-3 text-sm font-semibold text-black transition-transform hover:scale-[1.02]"
+            className="glow-amber rounded-full bg-amber px-6 py-3 text-sm font-semibold text-ink transition-transform hover:scale-[1.02]"
           >
             Star on GitHub
           </a>
@@ -45,7 +46,7 @@ export default function OpenSourceCTA() {
             href={GOOD_FIRST_ISSUES_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="rounded-full border border-line-strong px-6 py-3 text-sm font-medium text-fg transition-colors hover:bg-white/5"
+            className="rounded-full border border-line-strong px-6 py-3 text-sm font-medium text-fg transition-colors hover:bg-fg/5"
           >
             Good first issues
           </a>
@@ -79,7 +80,7 @@ export default function OpenSourceCTA() {
         <p className="mt-10 font-mono text-xs text-faint">
           License:{" "}
           <a href={LICENSE_URL} target="_blank" rel="noopener noreferrer" className="text-muted underline-offset-4 hover:text-amber hover:underline">
-            MIT © Rakshan Shetty
+            AGPL-3.0 © Rakshan Shetty
           </a>
         </p>
       </Reveal>

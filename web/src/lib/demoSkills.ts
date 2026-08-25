@@ -1,3 +1,5 @@
+// Copyright (C) 2026 Rakshan Shetty
+// SPDX-License-Identifier: AGPL-3.0-or-later
 /* ============================================================
    BATON — demo skill catalog
    Mirrors src/skills (catalog + bundled/bug-fix) so the Skills
@@ -6,6 +8,49 @@
    and ships the bug-fix reference files alongside each install.
    ============================================================ */
 import type { SkillStatus } from "../types";
+
+const BASIC_SETUP_BODY = `# Basic Setup — a project an experienced developer can read
+
+Two problems, one skill: a beginner's project has no structure, so nobody else can work in it —
+and it leaks secrets, because nothing stops it.
+
+\`\`\`
+DETECT MODE   empty dir → INITIAL     existing code → MID-PHASE (audit, never rewrite)
+PREFLIGHT     git / runtime / package manager / gitleaks
+INTERVIEW     ~5 PLAIN-LANGUAGE questions, RECOMMENDED option always #1
+DERIVE        answers → stack + structure pattern + security level
+⛔ APPROVE ⛔  nothing is written before the user confirms
+SCAFFOLD      official CLI where one exists; documented layout where none does
+SECURITY      .gitignore → .env.example → gitleaks hook → push protection → CI
+STRUCTURE     folders + STRUCTURE.md (humans) + AGENTS.md (agents)
+VERIFY        it builds, AND a planted fake secret is provably blocked
+⛔ ASK BEFORE COMMIT ⛔   ⛔ ASK BEFORE PUSH ⛔
+\`\`\`
+
+**Golden rules (excerpt)**
+1. Every question carries a recommendation, and the recommendation is option 1 — a user who
+   answers "1" every time must land a correct, professional project.
+2. Never ask a question the user cannot answer. Ask about the *project*, derive the *tech*.
+3. The hook fails closed: if gitleaks is missing, the commit is blocked. A hook that exits 0
+   when the scanner is absent protects nothing and lies about it.
+4. Recommend the lowest rung of the structure ladder that fits. Microservices needs an
+   explicit, informed override.
+5. State what is NOT protected — \`--no-verify\` defeats local hooks, and push protection is
+   free only on public GitHub repos.
+6. Never overwrite. Never commit or push without permission.
+
+**The structure ladder** — flat · layered-MVC · feature-modular (default) · feature-sliced ·
+clean/hexagonal · modular-monolith · microservices (gated).
+
+> Four independent standards — Feature-Sliced Design, bulletproof-react, FastAPI best practices
+> and Node.js Best Practices — converge on the same two laws: a folder is a BUSINESS thing, not
+> a technical one, and imports flow one direction. \`controllers/ services/ models/\` is the
+> named anti-pattern.
+
+_Ships 8 reference files: the interview script, the pattern ladder, the four security layers,
+per-stack verified commands, the mid-phase audit, the verification drill, copyable templates,
+and the edge-case table._
+`;
 
 const BUG_FIX_BODY = `# Bug Fix Skill (portable)
 
@@ -146,7 +191,56 @@ CONFIRM THE GOAL → INDEPENDENT SKEPTIC RE-CHECK → ONLY THEN DONE
 > completion report on merge. Pairs with traceable-changes.
 `;
 
+const CODE_REVIEW_BODY = `# Code Review (portable)
+
+A change can follow every convention and still build the wrong thing. It can do exactly what
+was asked while breaking how this codebase writes code. It can pass both and still add a path
+traversal. Three questions, never blended.
+
+\`\`\`
+PIN THE FIXED POINT → FIND SPEC / STANDARDS / SECURITY SOURCES →
+RUN THE AXES IN PARALLEL → REFUTE EVERY FINDING →
+REPORT SIDE BY SIDE, NEVER MERGED → PERSIST + ROUTE
+\`\`\`
+
+**Golden rules (excerpt)**
+1. Pin the fixed point first (\`git rev-parse\`) — a bad ref fails here, not in the sub-agents.
+2. The axes never merge: separate headings, no combined score, no cross-axis ranking.
+3. Every finding cites a standard, a named smell + hunk, a spec line, or a vuln class.
+4. Every finding is refuted before it is reported — unverified findings cost more than they save.
+5. A documented repo standard always overrides the smell baseline.
+6. Baseline smells are judgement calls; only documented standards can be breached outright.
+7. No spec found → say "no spec available". Never invent requirements.
+8. A partial review must say so — silent partial coverage reads as a clean pass.
+
+**Routing** — Standards → fix directly · Spec-missing → implement ·
+Spec-wrong → systematic-debugging (it's a bug) · Security → bug-fix.
+
+> Baton boost: \`baton review save\` persists findings so they outlive the session,
+> handoff brief / progress ledger as the spec source, who_touched to skip findings in
+> files someone is mid-edit, recall_memory for stored conventions.
+> Not verify-before-done — that's the author checking their own work first.
+`;
+
 export const DEMO_SKILLS: SkillStatus[] = [
+  {
+    id: "basic-setup",
+    name: "basic-setup",
+    description: "Set up a NEW project correctly from the first commit, or audit one that already drifted — folder structure, secret-leak protection, and the rules that keep both from rotting. Interviews in PLAIN LANGUAGE with a RECOMMENDED option on every question, so someone who has never coded can answer \"1\" every time and still land an industry-standard project. Installs defence-in-depth against leaked secrets — .gitignore, a committed gitleaks pre-commit hook with a custom rule for database URLs, GitHub push protection, and a CI backstop — then PROVES the hook works by planting a fake key.",
+    tags: ["setup", "scaffold", "new project", "folder structure", "project structure", "architecture", "mvc", "feature-sliced", "clean architecture", "modular monolith", "microservices", "best practice", "gitleaks", "secrets", "api key", ".env", "leak", "pre-commit", "push protection", "security", "devsecops", "beginner", "next.js", "react", "django", "fastapi", "agents.md"],
+    produces: ["plain-language interview", "structure pattern choice", "scaffolded project", ".gitleaks.toml + pre-commit hook", "push protection + CI backstop", ".env.example", "STRUCTURE.md (humans)", "AGENTS.md (agents)", "planted-secret drill proof", "ranked repair plan (mid-phase)"],
+    body: BASIC_SETUP_BODY,
+    source: "bundled",
+    references: [
+      "references/interview.md", "references/patterns.md", "references/security.md",
+      "references/stacks.md", "references/audit.md", "references/verification.md",
+      "references/templates.md", "references/edge-cases.md",
+    ],
+    installs: [
+      { agent: "claude", rel: ".claude/skills/basic-setup/SKILL.md", installed: false },
+      { agent: "cursor", rel: ".cursor/rules/basic-setup.mdc", installed: false },
+    ],
+  },
   {
     id: "bug-fix",
     name: "bug-fix",
@@ -218,6 +312,20 @@ export const DEMO_SKILLS: SkillStatus[] = [
     ],
   },
   {
+    id: "code-review",
+    name: "code-review",
+    description: "Review a diff since a fixed point (commit, branch, tag, or merge-base) along three axes that are never merged — Standards (repo conventions plus a baseline of classic code smells), Spec (does it implement what the issue, spec, or handoff brief asked for, with no scope creep?), and Security (does it introduce injection, authz, path-traversal, secret-leak, or SSRF risk?). Runs the axes as parallel sub-agents, adversarially refutes every finding before reporting it, and persists the result so findings outlive the session.",
+    tags: ["review", "code review", "pr", "pull request", "diff", "branch", "merge", "standards", "conventions", "spec", "scope creep", "code smell", "fowler", "security", "vulnerability", "injection", "parallel", "sub-agent", "skeptic"],
+    produces: ["pinned fixed point", "standards findings", "spec findings", "security findings", "refuted-first verification", "routed next steps", "durable review record (.baton/reviews)"],
+    body: CODE_REVIEW_BODY,
+    source: "bundled",
+    references: ["references/security-baseline.md", "references/smell-baseline.md"],
+    installs: [
+      { agent: "claude", rel: ".claude/skills/code-review/SKILL.md", installed: false },
+      { agent: "cursor", rel: ".cursor/rules/code-review.mdc", installed: false },
+    ],
+  },
+  {
     id: "map-codebase",
     name: "Map this codebase",
     description: "Build the graphify knowledge graph and CODEBASE.md so agents navigate a compact map instead of reading the whole repo.",
@@ -251,6 +359,11 @@ export const DEMO_SKILLS: SkillStatus[] = [
    each card shows (what / how / win). Kept in sync by hand; the real daemon
    serves these from the catalog. */
 const DEMO_EXPLAIN: Record<string, SkillStatus["explain"]> = {
+  "basic-setup": {
+    what: "Starts a project an experienced dev can read — and that can’t leak your keys.",
+    how: "Plain-language interview → pattern ladder → gitleaks hook + push protection + CI → STRUCTURE.md/AGENTS.md → proof drill.",
+    win: "Answer “1” to every question and still get an industry-standard, leak-proof project.",
+  },
   "bug-fix": {
     what: "A gated pipeline for fixing bugs without creating new ones.",
     how: "Reproduce → audit blast radius → hypothesis-driven root cause → 95% skeptic-checked plan → fix → re-verify.",
@@ -275,6 +388,11 @@ const DEMO_EXPLAIN: Record<string, SkillStatus["explain"]> = {
     what: "A \"done means verified\" gate before any completion claim.",
     how: "Re-read the diff, confirm symbols exist, run build/tests, independent skeptic re-check.",
     win: "Hallucinated \"done\" claims die before they ship.",
+  },
+  "code-review": {
+    what: "Reviews a diff since a fixed point along three axes that are never merged.",
+    how: "Standards, Spec and Security run as parallel sub-agents; every finding must survive a refute pass first.",
+    win: "No axis masks another, findings are verified not guessed, and they outlive the session.",
   },
   "map-codebase": {
     what: "Builds the repo map every other skill navigates by.",

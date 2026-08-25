@@ -1,3 +1,5 @@
+// Copyright (C) 2026 Rakshan Shetty
+// SPDX-License-Identifier: AGPL-3.0-or-later
 /**
  * Skill catalog — the curated, searchable set of reusable agent workflows Baton
  * ships with. A "skill" is a named markdown playbook (objective + steps) that an
@@ -73,6 +75,10 @@ const BUNDLED_DIR = fileURLToPath(new URL('./bundled', import.meta.url));
  * `tags:` / `produces:` arrays, if present, take precedence over these.
  */
 const BUNDLED_META: Record<string, { tags: string[]; produces: string[] }> = {
+  'basic-setup': {
+    tags: ['setup', 'scaffold', 'new project', 'boilerplate', 'starter', 'folder structure', 'project structure', 'architecture', 'mvc', 'feature-sliced', 'clean architecture', 'hexagonal', 'modular monolith', 'microservices', 'best practice', 'convention', 'gitleaks', 'secrets', 'api key', 'env', '.env', 'leak', 'pre-commit', 'hook', 'push protection', 'security', 'devsecops', 'beginner', 'onboarding', 'next.js', 'react', 'vite', 'nuxt', 'nestjs', 'express', 'django', 'fastapi', 'agents.md', 'structure.md', 'audit', 'cleanup'],
+    produces: ['plain-language interview', 'structure pattern choice', 'scaffolded project', '.gitleaks.toml + pre-commit hook', 'push protection + CI backstop', '.env.example', 'STRUCTURE.md (humans)', 'AGENTS.md (agents)', 'planted-secret drill proof', 'ranked repair plan (mid-phase)'],
+  },
   'bug-fix': {
     tags: ['bug', 'fix', 'debug', 'error', 'crash', 'regression', 'root cause', 'reproduce', 'blast radius', 'skeptic', 'review', 'worktree', 'commit'],
     produces: ['reproduction', 'blast-radius audit', 'root-cause analysis', 'approved plan', 'regression re-verify', 'bugfix report', 'auto-commit (never pushes)'],
@@ -93,6 +99,10 @@ const BUNDLED_META: Record<string, { tags: string[]; produces: string[] }> = {
     tags: ['verify', 'verification', 'double-check', 'hallucination', 'regression', 'skeptic', 'review', 'tests', 'build', 'done', 'symbol exists'],
     produces: ['re-read diff', 'symbol-existence check', 'build/test/lint run', 'independent skeptic re-check'],
   },
+  'code-review': {
+    tags: ['review', 'code review', 'pr', 'pull request', 'diff', 'branch', 'merge', 'standards', 'conventions', 'spec', 'scope creep', 'code smell', 'fowler', 'security', 'vulnerability', 'injection', 'parallel', 'sub-agent', 'skeptic'],
+    produces: ['pinned fixed point', 'standards findings', 'spec findings', 'security findings', 'refuted-first verification', 'routed next steps', 'durable review record (.baton/reviews)'],
+  },
   handoff: {
     tags: ['handoff', 'relay', 'usage limit', 'context limit', 'resume', 'continue', 'session', 'brief', 'pass', 'take', 'blocked', 'multi-agent'],
     produces: ['handoff brief', 'pickup command', 'resumed session'],
@@ -105,12 +115,21 @@ const BUNDLED_META: Record<string, { tags: string[]; produces: string[] }> = {
     tags: ['migrate', 'migration', 'port', 'convert', 'rewrite', 'angular', 'react', 'next.js', 'nextjs', 'vue', 'nestjs', 'express', 'framework', 'stack', 'phase', 'parity', 'endpoints', 'components', 'dry', 'reuse', 'resumable', 'ledger', 'parallel', 'multi-agent', 'fan-out', 'worktree', 'cursor', 'codex', 'antigravity', 'handoff'],
     produces: ['codebase inventory', 'ordered phase plan', 'MIGRATION.md ledger', 'reuse index', 'per-phase parity re-verify', '95% skeptic gate', 'auto-commit per phase (never pushes)', 'parallel fan-out plan + per-phase HANDOFF briefs'],
   },
+  'gaganfoxwell-office-hours': {
+    tags: ['planning', 'product', 'brainstorm', 'startup', 'design', 'office-hours', 'yc', 'forcing-questions', 'idea', 'validate'],
+    produces: ['design-doc', 'product-diagnosis', 'implementation-alternatives'],
+  },
 };
 
 /** What / how / advantage — three short lines per bundled skill, shown on the
  *  Skills screen so a human (or an agent browsing the catalog) understands each
  *  skill without reading its playbook. Keep every line under ~90 chars. */
 const SKILL_EXPLAIN: Record<string, SkillExplain> = {
+  'basic-setup': {
+    what: 'Starts a project an experienced dev can read — and that can’t leak your keys.',
+    how: 'Plain-language interview → pattern ladder → gitleaks hook + push protection + CI → STRUCTURE.md/AGENTS.md → proof drill.',
+    win: 'Answer “1” to every question and still get an industry-standard, leak-proof project.',
+  },
   'bug-fix': {
     what: 'A gated pipeline for fixing bugs without creating new ones.',
     how: 'Reproduce → audit blast radius → hypothesis-driven root cause → 95% skeptic-checked plan → fix → re-verify.',
@@ -141,6 +160,11 @@ const SKILL_EXPLAIN: Record<string, SkillExplain> = {
     how: 'Re-read the diff, confirm symbols exist, run build/tests, independent skeptic re-check.',
     win: 'Hallucinated "done" claims die before they ship.',
   },
+  'code-review': {
+    what: 'Reviews a diff since a fixed point along three axes that are never merged.',
+    how: 'Standards, Spec and Security run as parallel sub-agents; every finding must survive a refute pass first.',
+    win: 'No axis masks another, findings are verified not guessed, and they outlive the session.',
+  },
   handoff: {
     what: 'The relay: pass unfinished work to another agent instead of losing it.',
     how: 'create_handoff writes done / pending / next step; the next agent runs `baton resume`.',
@@ -160,6 +184,11 @@ const SKILL_EXPLAIN: Record<string, SkillExplain> = {
     what: 'Restructure code without changing behavior.',
     how: 'Green test baseline → isolated worktree → small steps → graph-checked callers.',
     win: 'Refactors land without breaking the caller you forgot existed.',
+  },
+  'gaganfoxwell-office-hours': {
+    what: 'YC-style product diagnosis — six forcing questions that expose demand reality.',
+    how: 'Startup mode: diagnostic on demand, status quo, wedge, observation, future-fit. Builder mode: design thinking for side projects and hackathons.',
+    win: 'No code written until the problem is worth solving. Design doc saved.',
   },
 };
 

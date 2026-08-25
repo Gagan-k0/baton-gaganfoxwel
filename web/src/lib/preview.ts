@@ -1,3 +1,5 @@
+// Copyright (C) 2026 Rakshan Shetty
+// SPDX-License-Identifier: AGPL-3.0-or-later
 /* ============================================================
    BATON — PREVIEW data (NOT part of the API contract)
    Token usage + git diffs aren't reported by `baton serve` yet.
@@ -237,6 +239,16 @@ export function fmtTokens(n: number): string {
   if (n >= 1000000) return (n / 1000000).toFixed(2) + "M";
   if (n >= 1000) return (n / 1000).toFixed(n >= 100000 ? 0 : 1) + "k";
   return String(n);
+}
+
+/**
+ * USD for the stat strip. Cents are noise next to a five-figure figure and
+ * `$22846.13` is hard to read at a glance, so group the digits and drop the
+ * fraction once we're past pocket change.
+ */
+export function fmtUsd(n: number): string {
+  const digits = n >= 100 ? 0 : 2;
+  return "$" + n.toLocaleString("en-US", { minimumFractionDigits: digits, maximumFractionDigits: digits });
 }
 
 /* ---------------- LIVE ACTIVITY (demo-mode scripted stream) ---------------- */

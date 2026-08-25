@@ -1,3 +1,5 @@
+// Copyright (C) 2026 Rakshan Shetty
+// SPDX-License-Identifier: AGPL-3.0-or-later
 import { describe, it, expect, afterEach } from 'vitest';
 import { mkdtemp, rm, mkdir, writeFile, stat } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
@@ -96,6 +98,37 @@ describe('doctor — hub coherence (shadow .baton detection)', () => {
     expect(kept.map((s) => s.projectId)).toEqual(['web']);
     expect(await exists(join(h.api, '.baton'))).toBe(false); // gone
     expect(await exists(join(h.web, '.baton'))).toBe(true);  // real state preserved
+  });
+
+  it('never reports the hub root itself — a single-repo KB registers the repo as its own project', async () => {
+    // What `baton kb init` writes in a plain single-repo setup: one project
+    // whose path IS the root. Its `.baton` is the hub store, not a shadow of it.
+    const root = await mkdtemp(join(tmpdir(), 'baton-dsolo-')); hub = root;
+    await git(['init', '-q'], root); // loadKb drops a project with no .git
+    await mkdir(join(root, '.baton', 'memory', 'facts'), { recursive: true });
+    await writeFile(join(root, '.baton', 'memory', 'facts', 'a.md'), 'fact', 'utf-8');
+    await writeFile(
+      join(root, '.baton', 'tasks.json'),
+      JSON.stringify([{ slug: 'x', task: 'wip', branch: 'x', worktreePath: '/w', baseBranch: 'main', baseCommit: null, createdAt: '2026-01-01T00:00:00Z' }]),
+      'utf-8',
+    );
+    await writeFile(
+      join(root, '.baton', 'kb.json'),
+      JSON.stringify({
+        root,
+        projects: [{ id: 'solo', name: 'solo', path: root, graphPath: join(root, 'graphify-out', 'graph.json') }],
+        mergedGraphPath: null,
+        lastBuiltAt: null,
+      }),
+      'utf-8',
+    );
+
+    expect(await scanShadowBatons(root)).toEqual([]);
+    // …and --fix must not touch the store it was told to "reconcile".
+    const { removed, kept } = await reconcileShadowBatons(root, true);
+    expect(removed).toEqual([]);
+    expect(kept).toEqual([]);
+    expect(await exists(join(root, '.baton', 'tasks.json'))).toBe(true);
   });
 
   it('reconcile dry-run removes nothing', async () => {

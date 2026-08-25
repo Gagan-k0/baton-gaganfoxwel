@@ -1,3 +1,5 @@
+// Copyright (C) 2026 Rakshan Shetty
+// SPDX-License-Identifier: AGPL-3.0-or-later
 /* ============================================================
    BATON — Activity dashboard (ported from activity.jsx)
    Real mode: everything is derived from /api/status + /api/signals.
@@ -9,7 +11,7 @@ import { AgentBadge, EmptyState } from "../components/primitives";
 import { ScreenHeader, isSettled } from "./shared";
 import { AGENT_REGISTRY, getAgent } from "../lib/registry";
 import { progressEstimate, timeAgo } from "../lib/format";
-import { getUsage, fmtTokens } from "../lib/preview";
+import { getUsage, fmtTokens, fmtUsd } from "../lib/preview";
 import { BatonAPI } from "../lib/api";
 import { usePoll, type PollState } from "../hooks/usePoll";
 import type { StatusRow, EditSignal, PresenceSession, AgentId, RepoUsage } from "../types";
@@ -185,7 +187,14 @@ export function ActivityScreen({
     a.n++; a.commits += s.ahead; a.files += s.filesChanged;
     byAgent[s.agent!] = a;
   });
-  const agentRows = AGENT_REGISTRY.map((a) => ({ a, u: byAgent[a.id!] })).filter((r) => r.u);
+  // Registry rows first, then custom-agent ids — `agg` above already counts
+  // their commits and files, so omitting their rows would break the table's
+  // arithmetic against its own totals.
+  const inRegistry = new Set<string>(AGENT_REGISTRY.map((a) => a.id!));
+  const agentRows = [
+    ...AGENT_REGISTRY.map((a) => ({ a, u: byAgent[a.id!] })),
+    ...Object.keys(byAgent).filter((id) => !inRegistry.has(id)).sort().map((id) => ({ a: getAgent(id), u: byAgent[id] })),
+  ].filter((r) => r.u);
   const maxAgentTok = Math.max(1, ...agentRows.map((r) => r.u.in + r.u.out));
   const maxAgentWork = Math.max(1, ...agentRows.map((r) => r.u.commits + r.u.files));
 
@@ -206,7 +215,11 @@ export function ActivityScreen({
         ...(real && real.totals.sessions > 0
           ? [{
               label: "Tokens used (Claude)", value: fmtTokens(real.totals.inputTokens + real.totals.outputTokens),
-              sub: `${real.totals.sessions} session${real.totals.sessions === 1 ? "" : "s"} · cache-read ${fmtTokens(real.totals.cacheReadTokens)} · ≈ $${(real.totals.estCostUsd ?? 0).toFixed(2)} est`,
+              // "≈ $22846.13 est" reads as a bill. It is not one: this is what the
+              // logged tokens would cost at API list prices, which a subscription
+              // does not charge — say so, and group the digits so a five-figure
+              // number is legible at a glance.
+              sub: `${real.totals.sessions} session${real.totals.sessions === 1 ? "" : "s"} · cache-read ${fmtTokens(real.totals.cacheReadTokens)} · ≈ ${fmtUsd(real.totals.estCostUsd ?? 0)} at API rates`,
               icon: "zap" as IconName, tone: "accent" as const,
             }]
           : []),
@@ -219,7 +232,13 @@ export function ActivityScreen({
     <div style={{ height: "100%", display: "flex", flexDirection: "column", minHeight: 0 }}>
       <ScreenHeader title="Activity" subtitle={demo ? "Progress, token usage & provenance across active sessions" : "Live progress & edit signals across active sessions"} />
       <div style={{ flex: 1, minHeight: 0, overflowY: "auto", padding: 20 }}>
-        <div style={{ maxWidth: 1080, margin: "0 auto", display: "flex", flexDirection: "column", gap: 16 }}>
+        {/* No width cap: a centered 1600px column left both ultrawide margins
+            empty AND sat right of the full-width ScreenHeader, so the title and
+            the cards below it did not share a left edge. This content is
+            instrument readings and file paths, not prose — it has no line-length
+            ceiling to respect — so it fills the width and aligns left (20px) with
+            the header. Stat labels wrap (see .stat-label); nothing ellipses. */}
+        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           {demo && (
             <PreviewBanner>
               <b style={{ color: "var(--text-primary)", fontWeight: 600 }}>Preview.</b> Token usage isn't reported by the Baton API yet — values here are illustrative. Commits &amp; progress are derived from real <span className="mono">/api/status</span> data.

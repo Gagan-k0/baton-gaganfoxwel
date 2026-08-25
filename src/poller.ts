@@ -1,3 +1,5 @@
+// Copyright (C) 2026 Rakshan Shetty
+// SPDX-License-Identifier: AGPL-3.0-or-later
 /**
  * Server-side change detector: the daemon polls its own status collector and
  * publishes diffs to the bus, so N dashboard clients get push updates from
@@ -18,10 +20,22 @@ export class StatusPoller {
   private timer: ReturnType<typeof setInterval> | null = null;
   private listeners = 0;
   private prev: StatusRow[] | null = null;
+  private prevAt = 0;
   private running = false;
 
   constructor(root: string) {
     this.root = root;
+  }
+
+  /**
+   * The latest collected rows, if fresh enough to serve — so HTTP reads ride
+   * the poller's shared scan instead of spawning their own ~10 git processes
+   * per task. Null when the poller is idle (no SSE client) or the snapshot
+   * has aged out; callers then collect directly.
+   */
+  snapshot(maxAgeMs: number = INTERVAL_MS + 500): StatusRow[] | null {
+    if (!this.prev || Date.now() - this.prevAt > maxAgeMs) return null;
+    return this.prev;
   }
 
   /** Call when an SSE client connects; returns a release fn for disconnect. */
@@ -55,6 +69,7 @@ export class StatusPoller {
       const rows = await collectStatus(this.root);
       const prev = this.prev;
       this.prev = rows;
+      this.prevAt = Date.now();
       if (!prev) return; // first snapshot is a baseline, not a change
       if (JSON.stringify(rows) !== JSON.stringify(prev)) {
         bus.publish({ type: 'status.changed', rows });
@@ -80,7 +95,14 @@ export class StatusPoller {
     try {
       const task = (await loadTasks(this.root)).find((t) => t.slug === slug);
       if (!task) return;
-      const commits = await branchCommits(task.branch, task.baseBranch, this.root);
+      // task.repoRoot, not this.root: in a hub the branch lives in the
+      // SUB-PROJECT and the served root is often not a git repo at all. Asking
+      // the wrong repo made `branchCommits` fail into `[]`, so `commit.created`
+      // never fired for any hub task — the Live feed stayed empty, and worse,
+      // that event is one of only two things that settle a signal, so committed
+      // files kept reading as busy to every other agent. Sixth instance of the
+      // wrong-root shape; every other consumer already spells it this way.
+      const commits = await branchCommits(task.branch, task.baseBranch, task.repoRoot ?? this.root);
       for (const c of commits.slice(0, count)) {
         bus.publish({ type: 'commit.created', slug, sha: c.sha, message: c.message });
       }

@@ -11,7 +11,7 @@ install steps see [SETUP.md](../SETUP.md).
 | `dashboard not built — run: npm run build --prefix web` | The compiled UI is missing. Run `npm run build --prefix web`, then restart `baton serve`. |
 | `graphify is not installed` | The knowledge base needs the external `graphify` CLI. Install it with `uv tool install graphifyy` (or `pipx install graphifyy` / `pip install graphifyy`), then re-run your `baton kb` command. |
 | Agent `query_graph` / `get_node` calls fail or timeout | Graph queries route through the daemon's shared graphify pool. `baton serve` must be running. Start it with `baton serve --write` and ensure your agent's MCP config points at the correct daemon port. |
-| Agent `.mcp.json` still has old `uv run` stdio entries for graphify | Re-run `baton kb init` (or use the **Agents → Connect** action in the dashboard) to rewrite the MCP config to the http proxy format. Codex intentionally stays on stdio and does not need re-connecting. |
+| Agent `.mcp.json` / Codex `config.toml` still has old `uv run` stdio entries for graphify | Re-run `baton kb init` (or use the **Agents → Connect** action in the dashboard) to rewrite the MCP config. Claude/Cursor/Gemini get http URLs; Codex gets `baton mcp-bridge <url>` into the same shared pool. |
 | Port `7077` is busy | Start on another port: `baton serve -p 7079`. Then regenerate the MCP config for the new port: `baton kb init --port 7079` (or `baton kb mcp --port 7079`). In the dashboard, add it as a connection (switcher → **Add connection…** → `http://localhost:7079`). |
 | 403 on every graph query on a teammate's machine (committed `.mcp.json`) | Re-run `baton kb init` (regenerates the config with YOUR `.baton/mcp-token`). |
 | Knowledge Graph has nodes but no docs/PDF content | Code-only extraction needs no key, but graphify only summarizes docs/PDFs when an LLM key is set. Export one (`ANTHROPIC_API_KEY`, `GEMINI_API_KEY`, …) and run `baton kb rebuild --full`. |
@@ -19,6 +19,39 @@ install steps see [SETUP.md](../SETUP.md).
 | Interactive terminals say tmux is missing | tmux hosts the in-dashboard agent terminals. Install it (`brew install tmux` / `apt install tmux`) and restart the daemon. Headless runs (`baton start`) work without tmux. |
 | Mutating buttons (merge, remove, agent start) are greyed out | The daemon is read-only. Restart it with `baton serve --write`. See [Read-only mode](#read-only-mode) below. |
 | Action refused even with `--write` | Every mutating request must carry a loopback `Origin` header (a central anti-CSRF guard). The dashboard and `curl` from localhost pass; a request without a loopback origin is rejected by design. |
+
+### `npm i batonhq` fails with a node-gyp / native build error
+
+Symptoms — a wall of `gyp` output ending in something like:
+
+```
+npm error command sh -c prebuild-install || node-gyp rebuild --release
+npm error /bin/sh: -c: line 0: syntax error near unexpected token `('
+npm error gyp ERR! build error
+```
+
+**Baton is not the thing that failed, and it is not what should be installed.**
+
+`npm i batonhq` asks npm to reconcile your project's *entire* dependency tree.
+If that project has native modules — `better-sqlite3`, `node-sass`, anything
+Electron — npm rebuilds them from source, and any pre-existing reason they
+cannot compile now surfaces with `batonhq` sitting in the command line. Two
+common ones: no prebuilt binary exists for your Node version, or your project
+path contains characters the generated Makefile does not quote, such as
+parentheses in `.../MIAM-(Marketing)/...`.
+
+Baton itself has five dependencies, all pure JavaScript, and no build step.
+
+Install it as the tool it is:
+
+```bash
+npx batonhq setup        # nothing is added to your project
+npm i -g batonhq         # or put `baton` on your PATH
+```
+
+Both leave your project's `node_modules` untouched. If `batonhq` already
+reached your `package.json`, `npm remove batonhq` — `baton setup` also warns you
+about this when it scans.
 
 ### Graph tools need `baton serve`
 
@@ -28,20 +61,22 @@ those tools:
 
 1. Make sure `baton serve` (or `baton serve --write`) is running and accessible
    on the port your agent's config points at.
-2. Check that the MCP config URL uses the http proxy form, not the old stdio
-   `uv run` form. If it still has `"command": "uv"` for graphify entries, your
-   setup was created before the shared-pool feature. Re-connect:
+2. Check that the MCP config uses the shared-pool form, not the old per-agent
+   `uv run` spawn. If it still has `"command": "uv"` (or Codex TOML
+   `command = "uv"`) for graphify entries, your setup predates the shared pool
+   (or the Codex bridge). Re-connect:
 
    ```bash
    # From the CLI:
-   baton kb init           # re-generates and writes .mcp.json
+   baton kb init                      # re-generates and writes .mcp.json
+   baton kb mcp --agent codex         # print the Codex bridge snippet
 
    # Or from the dashboard:
-   # Agents screen → Connect (for claude / cursor / gemini)
+   # Agents screen → Connect (claude / cursor / gemini / codex)
    ```
 
-   Codex is intentionally kept on stdio (`command`/`args` TOML), so you do not
-   need to re-connect Codex.
+   Codex should show `command = "baton"` / `args = ["mcp-bridge", "http://…"]`
+   — it still uses stdio TOML keys, but those args point at the shared pool.
 
 3. If the daemon is running on a non-default port, make sure the MCP config URL
    matches (`http://127.0.0.1:<port>/mcp/g/<token>/<id>`). Regenerate with:
@@ -136,9 +171,11 @@ pkill -f 'tmux -C attach' && rm -rf /tmp/tmux-$UID
 
 ### Does Baton support agents other than Claude Code?
 
-Yes. Baton coordinates **Claude Code, Cursor, Codex, Gemini CLI, Aider, and
-OpenCode** on one repo. Headless print-mode runs (`baton start`) support claude,
-codex, and gemini; interactive tmux terminals in the dashboard support all six.
+Yes. Baton coordinates **Claude Code, Cursor, Codex, Gemini CLI, Aider,
+OpenCode, and OpenClaw** on one repo — and any other agent CLI you teach it
+via `~/.baton/agents.json` (see [installation](./installation.md)). Headless
+print-mode runs (`baton start`) support claude, codex, and gemini; interactive
+tmux terminals in the dashboard cover every agent with an interactive launcher.
 Routing and handoff briefs can target cursor, codex, gemini, or any.
 
 ### Where is my data stored?
@@ -147,7 +184,8 @@ Everything is local to your repo and machine:
 
 - **Tasks / worktrees** — branches `baton/<slug>` with worktrees under
   `.baton/wt/<slug>`.
-- **Memory** — evidence-anchored facts at `.baton/memory/facts/` (always the
+- **Memory** — evidence-anchored facts at `baton/memory/facts/` (tracked) and
+  `.baton/memory/facts/` (local-only); both are read (always the
   **main** repo, even when written from a worktree).
 - **Reports** — completion reports at `.baton/reports/<slug>.md`.
 - **History** — a local SQLite file-touch index.
