@@ -123,6 +123,10 @@ const BUNDLED_META: Record<string, { tags: string[]; produces: string[] }> = {
     tags: ['planning', 'strategy', 'review', 'scope', 'ambition', 'ceo', 'founder', 'think-bigger', 'expand'],
     produces: ['ceo-plan', 'scope-decisions', 'implementation-alternatives', 'review-report'],
   },
+  'gaganfoxwell-eng-review': {
+    tags: ['architecture', 'review', 'engineering', 'tests', 'performance', 'edge-cases', 'data-flow', 'error-handling'],
+    produces: ['architecture-review', 'test-plan', 'performance-analysis', 'review-report'],
+  },
 };
 
 /** What / how / advantage — three short lines per bundled skill, shown on the
@@ -198,6 +202,11 @@ const SKILL_EXPLAIN: Record<string, SkillExplain> = {
     what: 'CEO/founder-mode plan review — find the 10-star product in the request.',
     how: 'Premise challenge → dream state mapping → 4 review modes (expansion/selective/hold/reduction) → 11-section deep review → failure modes → verdict.',
     win: 'Every landmine caught before it explodes. Scope is deliberate, not accidental.',
+  },
+  'gaganfoxwell-eng-review': {
+    what: 'Eng manager-mode plan review — lock architecture, data flow, tests, and performance.',
+    how: 'Scope challenge → architecture review → error/edge case map → test strategy → performance analysis → verdict.',
+    win: 'Architecture locked before a line of code is written. No surprises during implementation.',
   },
 };
 
