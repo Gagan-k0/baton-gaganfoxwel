@@ -135,6 +135,10 @@ const BUNDLED_META: Record<string, { tags: string[]; produces: string[] }> = {
     tags: ['debugging', 'investigation', 'root-cause', 'hypothesis', 'fix', 'regression'],
     produces: ['root-cause-analysis', 'fix', 'investigation-report'],
   },
+  'gaganfoxwell-design-audit': {
+    tags: ['design', 'visual', 'audit', 'typography', 'spacing', 'hierarchy', 'polish', 'ui'],
+    produces: ['design-audit-report', 'fix-commits', 'design-system'],
+  },
 };
 
 /** What / how / advantage — three short lines per bundled skill, shown on the
@@ -225,6 +229,11 @@ const SKILL_EXPLAIN: Record<string, SkillExplain> = {
     what: 'Systematic debugging — no fixes without root cause investigation first.',
     how: 'Investigate (symptoms, code, changes) → Pattern analysis → Hypothesis testing → Minimal fix → Regression test.',
     win: 'Root cause found before any code is changed. No whack-a-mole debugging.',
+  },
+  'gaganfoxwell-design-audit': {
+    what: 'Live-site visual audit — find and fix design issues before users notice.',
+    how: 'First impression → Design system extraction → Page-by-page checklist → Fix loop with atomic commits.',
+    win: 'Every visual issue found and fixed. Typography, spacing, hierarchy — all polished.',
   },
 };
 
