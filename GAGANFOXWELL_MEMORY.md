@@ -427,10 +427,12 @@ Both projects use identical SKILL.md format:
 - [x] gaganfoxwell-private
 
 ### Phase 8: Utility Skills
-- [ ] gaganfoxwell-pdf
-- [ ] gaganfoxwell-diagram
-- [ ] gaganfoxwell-brain-setup
-- [ ] gaganfoxwell-brain-sync
+- [x] gaganfoxwell-learn
+- [x] gaganfoxwell-context-save
+- [x] gaganfoxwell-context-restore
+- [x] gaganfoxwell-first-task
+- [x] gaganfoxwell-teach
+- [x] gaganfoxwell-fork
 
 ---
 
