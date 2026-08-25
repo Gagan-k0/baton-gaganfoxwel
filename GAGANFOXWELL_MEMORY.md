@@ -419,10 +419,12 @@ Both projects use identical SKILL.md format:
 - [ ] gaganfoxwell-ios-sync
 
 ### Phase 7: Safety Skills
-- [ ] gaganfoxwell-careful
-- [ ] gaganfoxwell-freeze
-- [ ] gaganfoxwell-guard
-- [ ] gaganfoxwell-unfreeze
+- [x] gaganfoxwell-careful
+- [x] gaganfoxwell-freeze
+- [x] gaganfoxwell-guard
+- [x] gaganfoxwell-unfreeze
+- [x] gaganfoxwell-readonly
+- [x] gaganfoxwell-private
 
 ### Phase 8: Utility Skills
 - [ ] gaganfoxwell-pdf
