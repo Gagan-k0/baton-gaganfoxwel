@@ -139,6 +139,10 @@ const BUNDLED_META: Record<string, { tags: string[]; produces: string[] }> = {
     tags: ['design', 'visual', 'audit', 'typography', 'spacing', 'hierarchy', 'polish', 'ui'],
     produces: ['design-audit-report', 'fix-commits', 'design-system'],
   },
+  'gaganfoxwell-design-shotgun': {
+    tags: ['design', 'exploration', 'variants', 'mockups', 'brainstorm', 'visual'],
+    produces: ['design-variants', 'comparison-board', 'approved-design'],
+  },
 };
 
 /** What / how / advantage — three short lines per bundled skill, shown on the
@@ -234,6 +238,11 @@ const SKILL_EXPLAIN: Record<string, SkillExplain> = {
     what: 'Live-site visual audit — find and fix design issues before users notice.',
     how: 'First impression → Design system extraction → Page-by-page checklist → Fix loop with atomic commits.',
     win: 'Every visual issue found and fixed. Typography, spacing, hierarchy — all polished.',
+  },
+  'gaganfoxwell-design-shotgun': {
+    what: 'Generate multiple AI design variants, compare side-by-side, pick your favorite.',
+    how: 'Context gathering → Concept generation → Visual mockups → Comparison board → Feedback → Iterate.',
+    win: 'See 3-8 design directions before committing. No more "what if I tried something different?"',
   },
 };
 
