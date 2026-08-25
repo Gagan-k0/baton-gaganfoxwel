@@ -383,8 +383,8 @@ Both projects use identical SKILL.md format:
 - [x] gaganfoxwell-design-shotgun
 - [x] gaganfoxwell-design-html
 - [x] gaganfoxwell-devex-audit
-- [ ] gaganfoxwell-qa
-- [ ] gaganfoxwell-qa-report
+- [x] gaganfoxwell-qa
+- [x] gaganfoxwell-qa-report
 - [ ] gaganfoxwell-scrape
 - [ ] gaganfoxwell-skillify
 
