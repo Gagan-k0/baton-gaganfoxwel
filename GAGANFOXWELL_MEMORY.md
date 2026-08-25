@@ -378,7 +378,7 @@ Both projects use identical SKILL.md format:
 
 ### Phase 2: Implementation Skills
 - [x] gaganfoxwell-review
-- [ ] gaganfoxwell-investigate
+- [x] gaganfoxwell-investigate
 - [ ] gaganfoxwell-design-audit
 - [ ] gaganfoxwell-design-shotgun
 - [ ] gaganfoxwell-design-html
