@@ -167,6 +167,30 @@ const BUNDLED_META: Record<string, { tags: string[]; produces: string[] }> = {
     tags: ['web', 'scraping', 'codify', 'skill-creation', 'automation'],
     produces: ['skill-script', 'test', 'fixture'],
   },
+  'gaganfoxwell-careful': {
+    tags: ['safety', 'destructive', 'guardrails', 'prod'],
+    produces: ['warning'],
+  },
+  'gaganfoxwell-freeze': {
+    tags: ['safety', 'scope', 'directory', 'restrict'],
+    produces: ['freeze-boundary'],
+  },
+  'gaganfoxwell-guard': {
+    tags: ['safety', 'full', 'maximum', 'careful', 'freeze'],
+    produces: ['guard-active'],
+  },
+  'gaganfoxwell-unfreeze': {
+    tags: ['safety', 'unfreeze', 'unlock', 'clear'],
+    produces: ['freeze-cleared'],
+  },
+  'gaganfoxwell-readonly': {
+    tags: ['safety', 'read-only', 'inspect', 'explore'],
+    produces: ['readonly-mode'],
+  },
+  'gaganfoxwell-private': {
+    tags: ['safety', 'private', 'offline', 'no-external'],
+    produces: ['private-mode'],
+  },
 };
 
 /** What / how / advantage — three short lines per bundled skill, shown on the
@@ -297,6 +321,36 @@ const SKILL_EXPLAIN: Record<string, SkillExplain> = {
     what: 'Codify a successful scrape into a permanent, reusable skill on disk.',
     how: 'Confirm flow → Name skill → Synthesize script → Capture fixture → Write test → Stage → Test → Approve → Commit.',
     win: 'Future scrape calls with same intent run in ~200ms instead of re-driving the page.',
+  },
+  'gaganfoxwell-careful': {
+    what: 'Warn before destructive commands — rm -rf, DROP TABLE, force-push, git reset --hard.',
+    how: 'Check every bash command against destructive patterns. MEDIUM = warn and ask. HIGH = hard deny.',
+    win: 'No more accidental data loss. User can override each warning.',
+  },
+  'gaganfoxwell-freeze': {
+    what: 'Restrict file edits to a specific directory for the session.',
+    how: 'Ask user for directory → Store boundary → Block Edit/Write outside path.',
+    win: 'Debug without accidentally "fixing" unrelated code.',
+  },
+  'gaganfoxwell-guard': {
+    what: 'Full safety mode — destructive command warnings + directory-scoped edits combined.',
+    how: 'Activate careful + freeze together. Both protections run for the session.',
+    win: 'Maximum safety for prod debugging or shared environments.',
+  },
+  'gaganfoxwell-unfreeze': {
+    what: 'Clear the freeze boundary, allowing edits to all directories again.',
+    how: 'Read freeze-dir.txt → Show previous boundary → Delete file.',
+    win: 'Widen edit scope without ending the session.',
+  },
+  'gaganfoxwell-readonly': {
+    what: 'Read-only mode — no file writes, no git commits, no destructive operations.',
+    how: 'Block Edit/Write/commits. Allow Read/Glob/Grep and read-only bash.',
+    win: 'Explore unfamiliar codebases safely. Look without touching.',
+  },
+  'gaganfoxwell-private': {
+    what: 'Private mode — no external API calls, no web fetches, no data leaves the machine.',
+    how: 'Block WebFetch/WebSearch, curl/wget, npm install. Allow localhost.',
+    win: 'Work with sensitive code and proprietary data safely.',
   },
 };
 
