@@ -119,6 +119,10 @@ const BUNDLED_META: Record<string, { tags: string[]; produces: string[] }> = {
     tags: ['planning', 'product', 'brainstorm', 'startup', 'design', 'office-hours', 'yc', 'forcing-questions', 'idea', 'validate'],
     produces: ['design-doc', 'product-diagnosis', 'implementation-alternatives'],
   },
+  'gaganfoxwell-ceo-review': {
+    tags: ['planning', 'strategy', 'review', 'scope', 'ambition', 'ceo', 'founder', 'think-bigger', 'expand'],
+    produces: ['ceo-plan', 'scope-decisions', 'implementation-alternatives', 'review-report'],
+  },
 };
 
 /** What / how / advantage — three short lines per bundled skill, shown on the
@@ -189,6 +193,11 @@ const SKILL_EXPLAIN: Record<string, SkillExplain> = {
     what: 'YC-style product diagnosis — six forcing questions that expose demand reality.',
     how: 'Startup mode: diagnostic on demand, status quo, wedge, observation, future-fit. Builder mode: design thinking for side projects and hackathons.',
     win: 'No code written until the problem is worth solving. Design doc saved.',
+  },
+  'gaganfoxwell-ceo-review': {
+    what: 'CEO/founder-mode plan review — find the 10-star product in the request.',
+    how: 'Premise challenge → dream state mapping → 4 review modes (expansion/selective/hold/reduction) → 11-section deep review → failure modes → verdict.',
+    win: 'Every landmine caught before it explodes. Scope is deliberate, not accidental.',
   },
 };
 
