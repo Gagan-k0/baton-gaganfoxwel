@@ -131,6 +131,10 @@ const BUNDLED_META: Record<string, { tags: string[]; produces: string[] }> = {
     tags: ['review', 'code-review', 'pr', 'diff', 'security', 'testing', 'quality', 'pre-landing'],
     produces: ['review-report', 'findings', 'quality-score'],
   },
+  'gaganfoxwell-investigate': {
+    tags: ['debugging', 'investigation', 'root-cause', 'hypothesis', 'fix', 'regression'],
+    produces: ['root-cause-analysis', 'fix', 'investigation-report'],
+  },
 };
 
 /** What / how / advantage — three short lines per bundled skill, shown on the
@@ -216,6 +220,11 @@ const SKILL_EXPLAIN: Record<string, SkillExplain> = {
     what: 'Pre-landing code review — catch bugs that pass CI but break in prod.',
     how: 'Scope drift detection → critical pass (SQL, race conditions, trust boundaries) → specialist dispatch → confidence-calibrated findings → verdict.',
     win: 'Every finding verified, confidence-scored, and actionable. No false positive noise.',
+  },
+  'gaganfoxwell-investigate': {
+    what: 'Systematic debugging — no fixes without root cause investigation first.',
+    how: 'Investigate (symptoms, code, changes) → Pattern analysis → Hypothesis testing → Minimal fix → Regression test.',
+    win: 'Root cause found before any code is changed. No whack-a-mole debugging.',
   },
 };
 
