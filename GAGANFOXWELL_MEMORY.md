@@ -369,7 +369,7 @@ Both projects use identical SKILL.md format:
 ### Phase 1: Plan-Mode Skills
 - [x] gaganfoxwell-office-hours
 - [x] gaganfoxwell-ceo-review
-- [ ] gaganfoxwell-eng-review
+- [x] gaganfoxwell-eng-review
 - [ ] gaganfoxwell-design-review
 - [ ] gaganfoxwell-devex-review
 - [ ] gaganfoxwell-autoplan
