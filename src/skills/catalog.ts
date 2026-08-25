@@ -215,6 +215,10 @@ const BUNDLED_META: Record<string, { tags: string[]; produces: string[] }> = {
     tags: ['utility', 'worktree', 'parallel', 'isolation'],
     produces: ['worktree'],
   },
+  'gaganfoxwell-browse': {
+    tags: ['browser', 'web', 'fetch', 'read-only', 'scraping'],
+    produces: ['page-content', 'extracted-data'],
+  },
 };
 
 /** What / how / advantage — three short lines per bundled skill, shown on the
@@ -405,6 +409,11 @@ const SKILL_EXPLAIN: Record<string, SkillExplain> = {
     what: 'Fork a worktree for parallel work — create an isolated copy of the current state.',
     how: 'Determine name → Create worktree → Set up project → Report merge command.',
     win: 'Parallel work without affecting the main working directory.',
+  },
+  'gaganfoxwell-browse': {
+    what: 'Fetch and read web pages using WebFetch — lightweight read-only browser alternative.',
+    how: 'Determine URL → WebFetch → Extract content → Return structured data.',
+    win: 'Read any public web page without a full browser daemon. Read-only, HTTP-level.',
   },
 };
 
