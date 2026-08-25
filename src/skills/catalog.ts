@@ -159,6 +159,10 @@ const BUNDLED_META: Record<string, { tags: string[]; produces: string[] }> = {
     tags: ['qa', 'testing', 'bugs', 'report', 'quality', 'documentation'],
     produces: ['qa-report', 'health-score', 'bug-list'],
   },
+  'gaganfoxwell-scrape': {
+    tags: ['web', 'scraping', 'data-extraction', 'read-only', 'json'],
+    produces: ['scraped-data', 'json-output'],
+  },
 };
 
 /** What / how / advantage — three short lines per bundled skill, shown on the
@@ -279,6 +283,11 @@ const SKILL_EXPLAIN: Record<string, SkillExplain> = {
     what: 'Report-only QA testing — find bugs without fixing them.',
     how: 'Explore pages → Find bugs → Document with screenshots → Health score → Verdict.',
     win: 'Bug report with evidence. No code changes. Decide what to fix yourself.',
+  },
+  'gaganfoxwell-scrape': {
+    what: 'Pull data from a web page — read-only, returns JSON.',
+    how: 'Determine intent → Refuse mutating flows → Prototype extraction → Return JSON → Suggest skillify.',
+    win: 'Structured data from any web page. One-shot, read-only, JSON output.',
   },
 };
 
