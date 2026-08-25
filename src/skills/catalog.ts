@@ -163,6 +163,10 @@ const BUNDLED_META: Record<string, { tags: string[]; produces: string[] }> = {
     tags: ['web', 'scraping', 'data-extraction', 'read-only', 'json'],
     produces: ['scraped-data', 'json-output'],
   },
+  'gaganfoxwell-skillify': {
+    tags: ['web', 'scraping', 'codify', 'skill-creation', 'automation'],
+    produces: ['skill-script', 'test', 'fixture'],
+  },
 };
 
 /** What / how / advantage — three short lines per bundled skill, shown on the
@@ -288,6 +292,11 @@ const SKILL_EXPLAIN: Record<string, SkillExplain> = {
     what: 'Pull data from a web page — read-only, returns JSON.',
     how: 'Determine intent → Refuse mutating flows → Prototype extraction → Return JSON → Suggest skillify.',
     win: 'Structured data from any web page. One-shot, read-only, JSON output.',
+  },
+  'gaganfoxwell-skillify': {
+    what: 'Codify a successful scrape into a permanent, reusable skill on disk.',
+    how: 'Confirm flow → Name skill → Synthesize script → Capture fixture → Write test → Stage → Test → Approve → Commit.',
+    win: 'Future scrape calls with same intent run in ~200ms instead of re-driving the page.',
   },
 };
 
