@@ -151,6 +151,10 @@ const BUNDLED_META: Record<string, { tags: string[]; produces: string[] }> = {
     tags: ['developer-experience', 'dx', 'audit', 'onboarding', 'tthw', 'documentation'],
     produces: ['dx-scorecard', 'dx-report', 'improvement-recommendations'],
   },
+  'gaganfoxwell-qa': {
+    tags: ['qa', 'testing', 'bugs', 'quality', 'verification', 'fix'],
+    produces: ['qa-report', 'health-score', 'fix-commits'],
+  },
 };
 
 /** What / how / advantage — three short lines per bundled skill, shown on the
@@ -261,6 +265,11 @@ const SKILL_EXPLAIN: Record<string, SkillExplain> = {
     what: 'Live developer experience audit — test the DX before your users do.',
     how: 'Getting started flow → API/CLI ergonomics → Error messages → Documentation → Upgrade path → Scorecard.',
     win: 'DX scorecard with evidence. TTHW measured, friction points identified, quick wins surfaced.',
+  },
+  'gaganfoxwell-qa': {
+    what: 'Systematically QA test a web app and fix bugs found.',
+    how: 'Explore pages → Find bugs → Document with screenshots → Fix in source → Re-verify → Health score.',
+    win: 'Every bug found, fixed, and verified. Health score before/after. Ship with confidence.',
   },
 };
 
