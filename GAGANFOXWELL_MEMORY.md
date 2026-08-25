@@ -405,11 +405,9 @@ Both projects use identical SKILL.md format:
 - [ ] gaganfoxwell-cso
 - [ ] gaganfoxwell-plan-tune
 
-### Phase 5: Browser Skills (requires Bun)
-- [ ] gaganfoxwell-browse
-- [ ] gaganfoxwell-browser
-- [ ] gaganfoxwell-cookies
-- [ ] gaganfoxwell-pair
+### Phase 5: Browser Skills (adapted — no Bun dependency)
+- [x] gaganfoxwell-browse (WebFetch-based, read-only HTTP-level)
+- Skipped: gaganfoxwell-browser, gaganfoxwell-cookies, gaganfoxwell-pair (require Bun daemon)
 
 ### Phase 6: iOS Skills (requires Mac)
 - [ ] gaganfoxwell-ios-qa
