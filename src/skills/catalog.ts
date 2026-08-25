@@ -115,6 +115,10 @@ const BUNDLED_META: Record<string, { tags: string[]; produces: string[] }> = {
     tags: ['migrate', 'migration', 'port', 'convert', 'rewrite', 'angular', 'react', 'next.js', 'nextjs', 'vue', 'nestjs', 'express', 'framework', 'stack', 'phase', 'parity', 'endpoints', 'components', 'dry', 'reuse', 'resumable', 'ledger', 'parallel', 'multi-agent', 'fan-out', 'worktree', 'cursor', 'codex', 'antigravity', 'handoff'],
     produces: ['codebase inventory', 'ordered phase plan', 'MIGRATION.md ledger', 'reuse index', 'per-phase parity re-verify', '95% skeptic gate', 'auto-commit per phase (never pushes)', 'parallel fan-out plan + per-phase HANDOFF briefs'],
   },
+  'gaganfoxwell-office-hours': {
+    tags: ['planning', 'product', 'brainstorm', 'startup', 'design', 'office-hours', 'yc', 'forcing-questions', 'idea', 'validate'],
+    produces: ['design-doc', 'product-diagnosis', 'implementation-alternatives'],
+  },
 };
 
 /** What / how / advantage — three short lines per bundled skill, shown on the
@@ -180,6 +184,11 @@ const SKILL_EXPLAIN: Record<string, SkillExplain> = {
     what: 'Restructure code without changing behavior.',
     how: 'Green test baseline → isolated worktree → small steps → graph-checked callers.',
     win: 'Refactors land without breaking the caller you forgot existed.',
+  },
+  'gaganfoxwell-office-hours': {
+    what: 'YC-style product diagnosis — six forcing questions that expose demand reality.',
+    how: 'Startup mode: diagnostic on demand, status quo, wedge, observation, future-fit. Builder mode: design thinking for side projects and hackathons.',
+    win: 'No code written until the problem is worth solving. Design doc saved.',
   },
 };
 
