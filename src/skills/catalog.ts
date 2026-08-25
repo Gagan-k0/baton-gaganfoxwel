@@ -191,6 +191,30 @@ const BUNDLED_META: Record<string, { tags: string[]; produces: string[] }> = {
     tags: ['safety', 'private', 'offline', 'no-external'],
     produces: ['private-mode'],
   },
+  'gaganfoxwell-learn': {
+    tags: ['utility', 'learnings', 'knowledge', 'memory'],
+    produces: ['learnings', 'search-results'],
+  },
+  'gaganfoxwell-context-save': {
+    tags: ['utility', 'save', 'checkpoint', 'context'],
+    produces: ['context-file'],
+  },
+  'gaganfoxwell-context-restore': {
+    tags: ['utility', 'restore', 'resume', 'context'],
+    produces: ['restored-context'],
+  },
+  'gaganfoxwell-first-task': {
+    tags: ['utility', 'onboarding', 'new-project', 'setup'],
+    produces: ['orientation', 'first-commit'],
+  },
+  'gaganfoxwell-teach': {
+    tags: ['utility', 'teach', 'conventions', 'patterns'],
+    produces: ['teachings'],
+  },
+  'gaganfoxwell-fork': {
+    tags: ['utility', 'worktree', 'parallel', 'isolation'],
+    produces: ['worktree'],
+  },
 };
 
 /** What / how / advantage — three short lines per bundled skill, shown on the
@@ -351,6 +375,36 @@ const SKILL_EXPLAIN: Record<string, SkillExplain> = {
     what: 'Private mode — no external API calls, no web fetches, no data leaves the machine.',
     how: 'Block WebFetch/WebSearch, curl/wget, npm install. Allow localhost.',
     win: 'Work with sensitive code and proprietary data safely.',
+  },
+  'gaganfoxwell-learn': {
+    what: 'Review, search, prune, and export project learnings across sessions.',
+    how: 'Read learnings.jsonl → Search by keyword → Prune stale entries → Export as markdown.',
+    win: 'Don\'t repeat mistakes. "Haven\'t we seen this before?" answered instantly.',
+  },
+  'gaganfoxwell-context-save': {
+    what: 'Save working context — git state, decisions, remaining work.',
+    how: 'Capture git status → Summarize task → List decisions → Write to .gaganfoxwell/context/.',
+    win: 'Any future session can pick up without losing a beat.',
+  },
+  'gaganfoxwell-context-restore': {
+    what: 'Restore working context saved earlier by context-save.',
+    how: 'Find most recent context file → Read → Verify git state → Present summary → Resume.',
+    win: 'Resume where you left off, even across agent sessions.',
+  },
+  'gaganfoxwell-first-task': {
+    what: 'Handle the first task in a new project — orient, set up, complete first work.',
+    how: 'Read README → Check dependencies → Identify conventions → Complete small first task → Commit.',
+    win: 'New projects start fast with proven patterns, not trial and error.',
+  },
+  'gaganfoxwell-teach': {
+    what: 'Teach the agent project-specific patterns, conventions, and domain context.',
+    how: 'Ask user for context → Capture architectural decisions, naming, gotchas → Write to teachings.md.',
+    win: 'Agent understands your project like a team member, not a tourist.',
+  },
+  'gaganfoxwell-fork': {
+    what: 'Fork a worktree for parallel work — create an isolated copy of the current state.',
+    how: 'Determine name → Create worktree → Set up project → Report merge command.',
+    win: 'Parallel work without affecting the main working directory.',
   },
 };
 
