@@ -386,7 +386,7 @@ Both projects use identical SKILL.md format:
 - [x] gaganfoxwell-qa
 - [x] gaganfoxwell-qa-report
 - [x] gaganfoxwell-scrape
-- [ ] gaganfoxwell-skillify
+- [x] gaganfoxwell-skillify
 
 ### Phase 3: Release Skills
 - [ ] gaganfoxwell-ship
