@@ -155,6 +155,10 @@ const BUNDLED_META: Record<string, { tags: string[]; produces: string[] }> = {
     tags: ['qa', 'testing', 'bugs', 'quality', 'verification', 'fix'],
     produces: ['qa-report', 'health-score', 'fix-commits'],
   },
+  'gaganfoxwell-qa-report': {
+    tags: ['qa', 'testing', 'bugs', 'report', 'quality', 'documentation'],
+    produces: ['qa-report', 'health-score', 'bug-list'],
+  },
 };
 
 /** What / how / advantage — three short lines per bundled skill, shown on the
@@ -270,6 +274,11 @@ const SKILL_EXPLAIN: Record<string, SkillExplain> = {
     what: 'Systematically QA test a web app and fix bugs found.',
     how: 'Explore pages → Find bugs → Document with screenshots → Fix in source → Re-verify → Health score.',
     win: 'Every bug found, fixed, and verified. Health score before/after. Ship with confidence.',
+  },
+  'gaganfoxwell-qa-report': {
+    what: 'Report-only QA testing — find bugs without fixing them.',
+    how: 'Explore pages → Find bugs → Document with screenshots → Health score → Verdict.',
+    win: 'Bug report with evidence. No code changes. Decide what to fix yourself.',
   },
 };
 
