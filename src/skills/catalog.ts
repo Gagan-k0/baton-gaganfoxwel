@@ -143,6 +143,10 @@ const BUNDLED_META: Record<string, { tags: string[]; produces: string[] }> = {
     tags: ['design', 'exploration', 'variants', 'mockups', 'brainstorm', 'visual'],
     produces: ['design-variants', 'comparison-board', 'approved-design'],
   },
+  'gaganfoxwell-design-html': {
+    tags: ['design', 'html', 'css', 'implementation', 'frontend', 'production'],
+    produces: ['html-page', 'css-styles', 'design-implementation'],
+  },
 };
 
 /** What / how / advantage — three short lines per bundled skill, shown on the
@@ -243,6 +247,11 @@ const SKILL_EXPLAIN: Record<string, SkillExplain> = {
     what: 'Generate multiple AI design variants, compare side-by-side, pick your favorite.',
     how: 'Context gathering → Concept generation → Visual mockups → Comparison board → Feedback → Iterate.',
     win: 'See 3-8 design directions before committing. No more "what if I tried something different?"',
+  },
+  'gaganfoxwell-design-html': {
+    what: 'Turn approved mockups into production-quality HTML/CSS.',
+    how: 'Design analysis → Semantic HTML → CSS custom properties → Responsive design → Accessibility.',
+    win: 'Production-ready HTML that actually works. Text reflows, heights adjust, layouts are dynamic.',
   },
 };
 
