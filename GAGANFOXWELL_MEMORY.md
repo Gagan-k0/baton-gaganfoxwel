@@ -385,7 +385,7 @@ Both projects use identical SKILL.md format:
 - [x] gaganfoxwell-devex-audit
 - [x] gaganfoxwell-qa
 - [x] gaganfoxwell-qa-report
-- [ ] gaganfoxwell-scrape
+- [x] gaganfoxwell-scrape
 - [ ] gaganfoxwell-skillify
 
 ### Phase 3: Release Skills
