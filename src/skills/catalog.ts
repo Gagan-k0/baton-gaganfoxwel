@@ -147,6 +147,10 @@ const BUNDLED_META: Record<string, { tags: string[]; produces: string[] }> = {
     tags: ['design', 'html', 'css', 'implementation', 'frontend', 'production'],
     produces: ['html-page', 'css-styles', 'design-implementation'],
   },
+  'gaganfoxwell-devex-audit': {
+    tags: ['developer-experience', 'dx', 'audit', 'onboarding', 'tthw', 'documentation'],
+    produces: ['dx-scorecard', 'dx-report', 'improvement-recommendations'],
+  },
 };
 
 /** What / how / advantage — three short lines per bundled skill, shown on the
@@ -252,6 +256,11 @@ const SKILL_EXPLAIN: Record<string, SkillExplain> = {
     what: 'Turn approved mockups into production-quality HTML/CSS.',
     how: 'Design analysis → Semantic HTML → CSS custom properties → Responsive design → Accessibility.',
     win: 'Production-ready HTML that actually works. Text reflows, heights adjust, layouts are dynamic.',
+  },
+  'gaganfoxwell-devex-audit': {
+    what: 'Live developer experience audit — test the DX before your users do.',
+    how: 'Getting started flow → API/CLI ergonomics → Error messages → Documentation → Upgrade path → Scorecard.',
+    win: 'DX scorecard with evidence. TTHW measured, friction points identified, quick wins surfaced.',
   },
 };
 
