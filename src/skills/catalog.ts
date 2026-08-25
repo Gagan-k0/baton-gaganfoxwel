@@ -127,6 +127,10 @@ const BUNDLED_META: Record<string, { tags: string[]; produces: string[] }> = {
     tags: ['architecture', 'review', 'engineering', 'tests', 'performance', 'edge-cases', 'data-flow', 'error-handling'],
     produces: ['architecture-review', 'test-plan', 'performance-analysis', 'review-report'],
   },
+  'gaganfoxwell-review': {
+    tags: ['review', 'code-review', 'pr', 'diff', 'security', 'testing', 'quality', 'pre-landing'],
+    produces: ['review-report', 'findings', 'quality-score'],
+  },
 };
 
 /** What / how / advantage — three short lines per bundled skill, shown on the
@@ -207,6 +211,11 @@ const SKILL_EXPLAIN: Record<string, SkillExplain> = {
     what: 'Eng manager-mode plan review — lock architecture, data flow, tests, and performance.',
     how: 'Scope challenge → architecture review → error/edge case map → test strategy → performance analysis → verdict.',
     win: 'Architecture locked before a line of code is written. No surprises during implementation.',
+  },
+  'gaganfoxwell-review': {
+    what: 'Pre-landing code review — catch bugs that pass CI but break in prod.',
+    how: 'Scope drift detection → critical pass (SQL, race conditions, trust boundaries) → specialist dispatch → confidence-calibrated findings → verdict.',
+    win: 'Every finding verified, confidence-scored, and actionable. No false positive noise.',
   },
 };
 
