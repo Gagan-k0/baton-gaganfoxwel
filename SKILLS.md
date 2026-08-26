@@ -1,502 +1,712 @@
 # Gaganfoxwell Skills — Baton Integration
 
-> 26 skills ported from GStack to Baton. All build-verified and registered in
+> 26 skills integrated into Baton. All build-verified and registered in
 > `src/skills/catalog.ts`. Full source: `src/skills/bundled/<name>/SKILL.md`.
 
 ---
 
 ## Quick Reference
 
-| # | Skill | Phase | Triggers | What it does |
-|---|-------|-------|----------|-------------|
-| 1 | `gaganfoxwell-office-hours` | Plan | `brainstorm this`, `office hours`, `is this worth building` | YC-style product diagnosis — two modes: Startup (forcing questions) and Builder (design thinking) |
-| 2 | `gaganfoxwell-ceo-review` | Plan | `think bigger`, `expand scope`, `strategy review` | CEO/founder-mode plan review — 4 modes: expansion, selective, hold, reduction |
-| 3 | `gaganfoxwell-eng-review` | Plan | `review architecture`, `eng plan review`, `lock in the plan` | Eng manager-mode review — architecture, data flow, edge cases, tests |
-| 4 | `gaganfoxwell-review` | Impl | `review this pr`, `code review`, `check my diff` | Pre-landing code review — SQL safety, race conditions, trust boundaries, confidence scores |
-| 5 | `gaganfoxwell-investigate` | Impl | `debug this`, `fix this bug`, `root cause analysis` | Systematic debugging — Iron Law: no fixes without root cause first |
-| 6 | `gaganfoxwell-design-audit` | Impl | `visual design audit`, `design qa`, `design polish` | Live-site visual audit with fix loop — typography, spacing, hierarchy, AI slop detection |
-| 7 | `gaganfoxwell-design-shotgun` | Impl | `explore design variants`, `show me design options` | Multiple AI design variants, comparison board, structured feedback |
-| 8 | `gaganfoxwell-design-html` | Impl | `build the design`, `turn this into html` | Turn mockups into production HTML/CSS — responsive, accessible, semantic |
-| 9 | `gaganfoxwell-devex-audit` | Impl | `test the dx`, `dx audit`, `try the onboarding` | Live DX audit — TTHW measurement, 8-dimension scorecard |
-| 10 | `gaganfoxwell-qa` | Impl | `qa test this`, `find bugs on site`, `test the app` | Systematic QA — 3 tiers (quick/standard/exhaustive), health scores, fix loop |
-| 11 | `gaganfoxwell-qa-report` | Impl | `qa report only`, `just report bugs` | Report-only QA — no code changes, just evidence |
-| 12 | `gaganfoxwell-scrape` | Impl | `scrape this page`, `get data from`, `extract from` | Pull data from web pages — read-only, JSON output |
-| 13 | `gaganfoxwell-skillify` | Impl | `skillify`, `codify this scrape`, `make this permanent` | Codify scrape into permanent reusable skill — script + test + fixture |
-| 14 | `gaganfoxwell-careful` | Safety | `be careful`, `safety mode`, `prod mode` | Warn before destructive commands — rm -rf, DROP TABLE, force-push |
-| 15 | `gaganfoxwell-freeze` | Safety | `freeze edits`, `lock editing scope` | Restrict file edits to a specific directory |
-| 16 | `gaganfoxwell-guard` | Safety | `full safety mode`, `lock it down` | Combined careful + freeze — maximum safety |
-| 17 | `gaganfoxwell-unfreeze` | Safety | `unfreeze edits`, `unlock all directories` | Clear freeze boundary |
-| 18 | `gaganfoxwell-readonly` | Safety | `read only mode`, `inspect only` | No writes, no commits, no destructive operations |
-| 19 | `gaganfoxwell-private` | Safety | `private mode`, `no external calls` | No data leaves the machine — no WebFetch, no curl |
-| 20 | `gaganfoxwell-learn` | Utility | `show learnings`, `what have we learned` | Review, search, prune project learnings across sessions |
-| 21 | `gaganfoxwell-context-save` | Utility | `save progress`, `context save` | Save git state, decisions, remaining work |
-| 22 | `gaganfoxwell-context-restore` | Utility | `resume where i left off`, `context restore` | Restore saved context — picks up where you left off |
-| 23 | `gaganfoxwell-first-task` | Utility | `first task`, `new project setup`, `get started` | Orient, set up, complete first meaningful work in new project |
-| 24 | `gaganfoxwell-teach` | Utility | `teach you about`, `learn this pattern` | Capture project-specific patterns, conventions, domain context |
-| 25 | `gaganfoxwell-fork` | Utility | `fork this`, `create worktree`, `parallel work` | Create isolated git worktree for parallel work |
-| 26 | `gaganfoxwell-browse` | Browser | `browse a page`, `fetch a url` | Fetch web pages via WebFetch — lightweight read-only browser |
+| # | Skill | Phase | Trigger phrases |
+|---|-------|-------|-----------------|
+| 1 | `gaganfoxwell-office-hours` | Plan | "brainstorm this", "office hours", "is this worth building" |
+| 2 | `gaganfoxwell-ceo-review` | Plan | "think bigger", "expand scope", "strategy review" |
+| 3 | `gaganfoxwell-eng-review` | Plan | "review architecture", "lock in the plan" |
+| 4 | `gaganfoxwell-review` | Impl | "review this pr", "code review", "check my diff" |
+| 5 | `gaganfoxwell-investigate` | Impl | "debug this", "fix this bug", "root cause analysis" |
+| 6 | `gaganfoxwell-design-audit` | Impl | "visual design audit", "design polish" |
+| 7 | `gaganfoxwell-design-shotgun` | Impl | "explore design variants", "show me design options" |
+| 8 | `gaganfoxwell-design-html` | Impl | "build the design", "turn this into html" |
+| 9 | `gaganfoxwell-devex-audit` | Impl | "dx audit", "try the onboarding", "test developer experience" |
+| 10 | `gaganfoxwell-qa` | Impl | "qa test this", "find bugs on site", "test the app" |
+| 11 | `gaganfoxwell-qa-report` | Impl | "qa report only", "just report bugs" |
+| 12 | `gaganfoxwell-scrape` | Impl | "scrape this page", "get data from", "extract from" |
+| 13 | `gaganfoxwell-skillify` | Impl | "skillify", "codify this scrape", "make this permanent" |
+| 14 | `gaganfoxwell-careful` | Safety | "be careful", "safety mode", "prod mode" |
+| 15 | `gaganfoxwell-freeze` | Safety | "freeze edits to directory", "only edit this folder" |
+| 16 | `gaganfoxwell-guard` | Safety | "full safety mode", "lock it down" |
+| 17 | `gaganfoxwell-unfreeze` | Safety | "unfreeze edits", "unlock all directories" |
+| 18 | `gaganfoxwell-readonly` | Safety | "read only mode", "inspect only" |
+| 19 | `gaganfoxwell-private` | Safety | "private mode", "no external calls" |
+| 20 | `gaganfoxwell-learn` | Utility | "show learnings", "what have we learned" |
+| 21 | `gaganfoxwell-context-save` | Utility | "save progress", "save my work" |
+| 22 | `gaganfoxwell-context-restore` | Utility | "resume where i left off", "where was i" |
+| 23 | `gaganfoxwell-first-task` | Utility | "first task", "new project setup", "get started" |
+| 24 | `gaganfoxwell-teach` | Utility | "teach you about", "remember this" |
+| 25 | `gaganfoxwell-fork` | Utility | "fork this", "create worktree", "parallel work" |
+| 26 | `gaganfoxwell-browse` | Browser | "browse a page", "fetch a url" |
 
 ---
 
-## How to Use
+## How to Use Skills (General)
 
 ### Invocation
 
-Skills are invoked by name. In Baton's agent context, reference the skill:
+Skills are markdown instructions the agent loads and follows. Reference them by
+name or by trigger phrase in your message to any agent:
 
 ```
-Use the gaganfoxwell-investigate skill to debug this issue.
+Use the gaganfoxwell-investigate skill to debug this.
 ```
 
-Or reference by trigger phrase:
+or naturally:
 
 ```
-Debug this — the login page returns 500 intermittently.
+Debug this — login returns 500 intermittently.
 ```
 
-### Skill Chaining
-
-Skills are designed to chain:
+### The recommended lifecycle chain
 
 ```
-office-hours → ceo-review → eng-review → [implement] → review → qa
+gaganfoxwell-office-hours      (validate the idea)
+        ↓
+gaganfoxwell-ceo-review        (challenge scope/ambition)
+        ↓
+gaganfoxwell-eng-review        (lock architecture)
+        ↓
+[implement]                    (+ gaganfoxwell-freeze to stay scoped)
+        ↓
+gaganfoxwell-review            (pre-landing code review)
+        ↓
+gaganfoxwell-qa                (test & fix)
+        ↓
+gaganfoxwell-context-save      (checkpoint before ending session)
 ```
 
-### Safety Modes
+### Verify installation
 
-Activate safety modes before risky work:
-
+```bash
+baton skills list          # all 26 should appear as [bundled]
+baton skills install gaganfoxwell-qa   # install one into an agent
 ```
-Activate gaganfoxwell-guard for maximum safety.
-```
-
-This enables both destructive command warnings and directory-scoped edits.
 
 ---
 
-## Full Skill Documentation
-
-Below is the complete SKILL.md content for each skill.
+# Skill Catalog — Full Details
 
 ---
 
-### 1. gaganfoxwell-office-hours
+## 1. gaganfoxwell-office-hours
 
-**Phase:** Plan-Mode | **Triggers:** `brainstorm this`, `is this worth building`, `help me think through`, `office hours`, `I have an idea`
+**What it contains**
 
-**What it does:** YC Office Hours with two modes. Startup mode: six forcing questions that expose demand reality, status quo, desperate specificity, narrowest wedge, observation, and future-fit. Builder mode: design thinking brainstorming for side projects, hackathons, learning, and open source. Saves a design doc.
+A YC-partner-style product diagnostic that runs BEFORE any code is written.
+Two modes selected by your goal:
 
-**Full source:** `src/skills/bundled/gaganfoxwell-office-hours/SKILL.md`
+- **Startup mode (Phase 2A):** six forcing questions asked one at a time, with
+  pushback until answers are specific and evidence-based:
+  1. Demand Reality — evidence someone would be upset if this vanished
+  2. Status Quo — what users do today (spreadsheets/workarounds)
+  3. Desperate Specificity — name one person who needs this
+  4. Narrowest Wedge — smallest version someone pays for this week
+  5. Observation — when did you last watch a user struggle
+  6. Future-Fit — what breaks at 12 months
+  Includes anti-sycophancy rules and 5 named pushback patterns.
+- **Builder mode (Phase 2B):** design-thinking diagnostic (what/who/pain/
+  scope/timeline/stack) for hackathons, learning, side projects.
 
-**Key workflow:**
-1. Phase 1: Context Gathering — read project files, git history, assess product stage
-2. Phase 2A (Startup): Six forcing questions — Demand Reality, Status Quo, Desperate Specificity, Narrowest Wedge, Observation, Future-Fit
-3. Phase 2B (Builder): Builder Diagnostic — What/Who/Pain/Scope/Timeline/Stack
-4. Phase 3: Implementation Alternatives — Narrow Wedge, Balanced Build, Full Vision
-5. Phase 4: Design Doc — save to `docs/YYYY-MM-DD-<slug>-design.md`
-6. Phase 5: Baton Memory — save decisions
+Then: 2–3 implementation alternatives (Narrow Wedge / Balanced Build / Full
+Vision) with effort + risk, and a design doc written to disk.
 
----
+**How to use — step by step**
 
-### 2. gaganfoxwell-ceo-review
+1. Say: `"Office hours: I want to build <one-line idea>."`
+2. Answer the goal question (startup vs builder) — it routes the mode.
+3. Answer the forcing questions one at a time; expect pushback on vague answers.
+4. Receive alternatives A/B/C with effort/risk; pick one.
+5. Get the design doc saved at `docs/YYYY-MM-DD-<slug>-design.md`.
 
-**Phase:** Plan-Mode | **Triggers:** `think bigger`, `expand scope`, `strategy review`, `rethink this plan`, `is this ambitious enough`
+**Inputs:** a one-line idea. **Outputs:** `docs/*-design.md`, Baton memory entries,
+recommended next skill (`ceo-review`).
 
-**What it does:** CEO/founder-mode plan review. Rethink the problem, find the 10-star product, challenge premises, expand scope when it creates a better product. Four modes: SCOPE EXPANSION, SELECTIVE EXPANSION, HOLD SCOPE, SCOPE REDUCTION.
-
-**Full source:** `src/skills/bundled/gaganfoxwell-ceo-review/SKILL.md`
-
-**Key workflow:**
-1. Step 0: System Audit — git log, TODOs, design doc check
-2. Step 0A: Premise Challenge — is this the right problem?
-3. Step 0B: Existing Code Leverage — what already exists?
-4. Step 0C: Dream State Mapping — 12-month ideal state
-5. Step 0C-bis: Implementation Alternatives — 2-3 approaches mandatory
-6. Step 0D: Mode Selection — expansion/selective/hold/reduction
-7. Step 1: Deep Review (11 sections) — architecture, errors, edge cases, security, tests, observability, deployment, performance, compatibility, docs, UI/UX
-8. Step 2: Failure Modes
-9. Step 3: Review Report
-
----
-
-### 3. gaganfoxwell-eng-review
-
-**Phase:** Plan-Mode | **Triggers:** `review architecture`, `eng plan review`, `check the implementation plan`, `lock in the plan`
-
-**What it does:** Eng manager-mode plan review. Lock in the execution plan — architecture, data flow, diagrams, edge cases, test coverage, performance.
-
-**Full source:** `src/skills/bundled/gaganfoxwell-eng-review/SKILL.md`
-
-**Key workflow:**
-1. Scope Gate — what to review (branch diff, plan, or file)
-2. Step 0: Scope Challenge — existing code, minimum changes, complexity check
-3. Section 1: Architecture Review — data flow diagrams, state transitions, API contracts
-4. Section 2: Error & Rescue Map — happy path, nil, empty, upstream error
-5. Section 3: Edge Case Map — double-click, navigate away, slow connection, stale state
-6. Section 4: Test Strategy — test matrix, coverage targets
-7. Section 5: Performance Analysis — hot paths, caching, database, memory
-8. Section 6: Review Report with VERDICT
+**Example**
+> You: "Office hours — an app that tells me which of my subscriptions I forgot to cancel."
+> Skill asks: "What's your goal with this?" → you answer → Q1..Q6 follow.
 
 ---
 
-### 4. gaganfoxwell-review
+## 2. gaganfoxwell-ceo-review
 
-**Phase:** Implementation | **Triggers:** `review this pr`, `code review`, `check my diff`, `pre-landing review`
+**What it contains**
 
-**What it does:** Pre-landing code review. Analyzes diff against base branch for SQL safety, race conditions, trust boundary violations. Includes scope drift detection, confidence-calibrated findings, specialist dispatch.
+Founder-mode plan review that challenges premises and calibrates ambition.
+Contents:
 
-**Full source:** `src/skills/bundled/gaganfoxwell-review/SKILL.md`
+- System Audit (git log, TODOs, existing design docs)
+- Premise Challenge — right problem? real outcome? cost of doing nothing?
+- Existing-code leverage mapping (don't rebuild what exists)
+- Dream-state mapping (current → plan → 12-month ideal)
+- Mandatory 2–3 implementation approaches (one minimal-viable, one ideal)
+- Mode selection: **SCOPE EXPANSION / SELECTIVE EXPANSION / HOLD SCOPE /
+  SCOPE REDUCTION**, with context-aware defaults (bug fix → hold scope)
+- Deep review across 11 sections (architecture, error paths, edge cases,
+  security, tests, observability, deployment, performance, compatibility,
+  docs, UI/UX), failure-mode analysis, verdict report.
 
-**Key workflow:**
-1. Step 0: Detect platform and base branch
-2. Step 1: Check branch — nothing to review if on base
-3. Step 2: Scope Drift Detection — did they build what was requested?
-4. Step 3: Get the diff
-5. Step 4: Critical Pass — SQL safety, race conditions, trust boundaries, shell injection, enum completeness
-6. Step 5: Confidence Calibration — every finding rated 1-10
-7. Step 6: Specialist Dispatch — testing, maintainability, security, performance, data migration, API contract, design
-8. Step 7: Fix-First Classification — AUTO-FIX, ASK, NOTE
-9. Step 8: Review Report with VERDICT
+**How to use — step by step**
 
----
+1. Have a plan or design doc first (`office-hours` output works best).
+2. Say: `"CEO review the plan in docs/2026-08-25-x-design.md"` or `"Think bigger on this plan."`
+3. Answer premise questions honestly.
+4. Choose one implementation approach (A/B/C).
+5. Choose a review mode (expansion/selective/hold/reduction). If expanding,
+   approve/reject each expansion individually.
+6. Receive `docs/YYYY-MM-DD-<slug>-ceo-review.md` with an APPROVED /
+   APPROVED WITH CONCERNS / REVISIONS NEEDED / REJECTED verdict.
 
-### 5. gaganfoxwell-investigate
-
-**Phase:** Implementation | **Triggers:** `debug this`, `fix this bug`, `why is this broken`, `root cause analysis`, `investigate this error`
-
-**What it does:** Systematic debugging with root cause investigation. No fixes without root cause first. Four phases: investigate, analyze, hypothesize, implement.
-
-**Full source:** `src/skills/bundled/gaganfoxwell-investigate/SKILL.md`
-
-**Key workflow:**
-1. Phase 1: Root Cause Investigation — collect symptoms, read code, check recent changes, reproduce
-2. Phase 2: Pattern Analysis — race condition, nil propagation, state corruption, integration failure, config drift, stale cache
-3. Phase 3: Hypothesis Testing — confirm with evidence, 3-strike rule
-4. Phase 4: Implementation — minimal fix, verify, regression test, blast radius check
-
-**IRON LAW:** No fixes without root cause investigation first.
+**Inputs:** a plan/design doc or branch. **Outputs:** CEO review report + verdict.
 
 ---
 
-### 6. gaganfoxwell-design-audit
+## 3. gaganfoxwell-eng-review
 
-**Phase:** Implementation | **Triggers:** `visual design audit`, `design qa`, `fix design issues`, `design polish`, `check if it looks good`
+**What it contains**
 
-**What it does:** Live-site visual audit with fix loop. Reviews typography, spacing, hierarchy, AI slop patterns, and slow interactions — then fixes them with atomic commits.
+Engineering-manager plan review that locks execution before coding:
 
-**Full source:** `src/skills/bundled/gaganfoxwell-design-audit/SKILL.md`
+- Scope gate: choose reviewing target (branch diff / pasted plan / files)
+- Scope challenge: minimum-change analysis, complexity smell check (>8 files
+  or >2 new services = stop and ask), framework built-in search, TODOS
+  cross-reference, completeness check
+- Architecture review with ASCII data-flow diagrams, state transitions, API
+  contracts, dependency/coupling analysis
+- Error & rescue map (happy path / nil / empty / upstream failure per flow)
+- Edge-case map (double-click, navigate-away, slow connection, stale state…)
+- Test strategy matrix + coverage targets
+- Performance analysis (hot paths, caching, DB indexes, memory)
 
-**Key workflow:**
-1. Phase 1: First Impression — gut reaction, page area test
-2. Phase 2: Design System Extraction — fonts, colors, heading scale, spacing
-3. Phase 3: Page-by-Page Visual Audit — typography, spacing, hierarchy, color, layout, interaction, AI slop, performance
-4. Phase 4: Fix Loop — classify severity, fix, commit atomically, re-verify
-5. Phase 5: Design Audit Report
+**How to use — step by step**
 
----
+1. Say: `"Eng review this plan"` (or `"review architecture"`).
+2. Pick review target: A) branch diff, B) paste plan, C) specific path.
+3. If complexity check triggers, decide reduce-vs-proceed.
+4. Walk through findings interactively — each has a recommendation and asks
+   for your call.
+5. Get `docs/YYYY-MM-DD-<slug>-eng-review.md` with verdict.
 
-### 7. gaganfoxwell-design-shotgun
-
-**Phase:** Implementation | **Triggers:** `explore design variants`, `show me design options`, `visual design brainstorm`, `design options`
-
-**What it does:** Generate multiple AI design directions, open them side-by-side, collect structured feedback, and iterate.
-
-**Full source:** `src/skills/bundled/gaganfoxwell-design-shotgun/SKILL.md`
-
-**Key workflow:**
-1. Step 1: Context Gathering — who, job-to-be-done, what exists, user flow, edge cases
-2. Step 2: Taste Memory — read prior approved designs
-3. Step 3: Generate Variants — concept generation, visual generation, comparison board
-4. Step 4: Collect Feedback — approve/reject/iterate per variant
-5. Step 5: Iterate — max 3 iterations
-6. Step 6: Output — comparison board, approved design, design notes
+**Inputs:** diff/plan/path. **Outputs:** eng review report + verdict + test matrix.
 
 ---
 
-### 8. gaganfoxwell-design-html
+## 4. gaganfoxwell-review
 
-**Phase:** Implementation | **Triggers:** `build the design`, `code the mockup`, `make design real`, `finalize this design`, `turn this into html`
+**What it contains**
 
-**What it does:** Turn approved mockups into production-quality HTML/CSS. Text reflows, heights computed, layouts dynamic.
+Pre-landing PR/diff review for bugs tests don't catch:
 
-**Full source:** `src/skills/bundled/gaganfoxwell-design-html/SKILL.md`
+- Scope-drift detection (did the branch build what was requested — no more,
+  no less?)
+- CRITICAL pass categories: SQL/data safety, race conditions & TOCTOU, trust
+  boundaries, shell injection, enum completeness
+- INFORMATIONAL pass: async/sync mixing, swallowed errors, type safety,
+  N+1 queries, completeness gaps
+- Confidence calibration: every finding scored 1–10; low-confidence findings
+  are suppressed unless P0; you must be able to quote the offending line
+- Specialist dispatch for diffs >50 lines (testing, maintainability, security,
+  performance, migrations, API contract, design) + red-team pass for >200 lines
+- Fix-first classification (AUTO-FIX / ASK / NOTE) and a quality score X/10.
 
-**Key workflow:**
-1. Step 0: Input Detection — check for approved mockups or DESIGN.md
-2. Step 1: Design Analysis — extract tokens (colors, typography, spacing, layout, components)
-3. Step 2: HTML Structure — semantic, accessible, responsive
-4. Step 3: CSS Styles — custom properties, mobile-first, spacing scale
-5. Step 4: Responsive Design — breakpoints (mobile/tablet/desktop)
-6. Step 5: Interactive States — hover, focus, active
-7. Step 6: Accessibility — WCAG AA compliance
-8. Step 7: Output — save to `docs/designs/<page-name>/`
+**How to use — step by step**
 
----
+1. Be on a feature branch with changes vs base.
+2. Say: `"Code review"` or `"Review this PR before I land it."`
+3. Read the scope-check line (CLEAN / DRIFT DETECTED / REQUIREMENTS MISSING).
+4. Review findings table — each shows severity + confidence + file:line.
+5. Approve AUTO-FIX items; decide ASK items.
+6. Get `docs/YYYY-MM-DD-<slug>-review.md` with APPROVE / REQUEST CHANGES / BLOCK.
 
-### 9. gaganfoxwell-devex-audit
-
-**Phase:** Implementation | **Triggers:** `live dx audit`, `test developer experience`, `measure onboarding time`, `dx audit`, `try the onboarding`
-
-**What it does:** Live developer experience audit. Tests the DX by navigating docs, trying the getting started flow, timing TTHW (Time To Hello World), and evaluating CLI help text.
-
-**Full source:** `src/skills/bundled/gaganfoxwell-devex-audit/SKILL.md`
-
-**Produces:** DX scorecard, DX report, improvement recommendations
-
----
-
-### 10. gaganfoxwell-qa
-
-**Phase:** Implementation | **Triggers:** `qa test this`, `find bugs on site`, `test the site`, `quality check`, `test the app`
-
-**What it does:** Systematically QA test a web application and fix bugs found. Three tiers: Quick (critical/high only), Standard (+ medium), Exhaustive (+ cosmetic). Produces before/after health scores.
-
-**Full source:** `src/skills/bundled/gaganfoxwell-qa/SKILL.md`
-
-**Produces:** QA report, health score, fix commits
+**Inputs:** current branch diff. **Outputs:** review report, findings, quality score.
 
 ---
 
-### 11. gaganfoxwell-qa-report
+## 5. gaganfoxwell-investigate
 
-**Phase:** Implementation | **Triggers:** `qa report only`, `just report bugs`, `test but dont fix`
+**What it contains**
 
-**What it does:** Report-only QA testing. Systematically tests a web application and produces a structured report — but never fixes anything.
+Systematic debugging under an Iron Law: **no fixes without root cause first**.
 
-**Full source:** `src/skills/bundled/gaganfoxwell-qa-report/SKILL.md`
+- Phase 1 Root Cause Investigation: symptoms, code tracing, `git log` on
+  affected files, deterministic reproduction, prior-investigation lookup
+- Phase 2 Pattern Analysis: known bug-pattern table (race condition, nil
+  propagation, state corruption, integration failure, config drift, stale
+  cache) + sanitized external search
+- Phase 3 Hypothesis Testing: verify with logs/assertions before fixing;
+  3-strike rule forces asking for help instead of guessing
+- Phase 4 Implementation: minimal root-cause fix, reproduction verification,
+  regression test, blast-radius scan
+- Optional scope lock (freeze to affected directory) and investigation report.
 
-**Produces:** QA report, health score, bug list
+**How to use — step by step**
 
----
+1. Say: `"Investigate why checkout fails with 500 on empty cart."`
+2. Provide symptoms/logs when asked — one question at a time.
+3. Wait through hypothesis testing; if 3 hypotheses fail you'll be asked for
+   extra context rather than getting a guess-fix.
+4. Confirm the minimal fix + regression test.
+5. Get `docs/YYYY-MM-DD-<slug>-investigation.md` documenting root cause,
+   evidence, fix, prevention, blast radius.
 
-### 12. gaganfoxwell-scrape
-
-**Phase:** Implementation | **Triggers:** `scrape this page`, `get data from`, `pull from`, `extract from`, `what is on`
-
-**What it does:** Pull data from a web page. First call prototypes the flow and returns JSON. Read-only.
-
-**Full source:** `src/skills/bundled/gaganfoxwell-scrape/SKILL.md`
-
-**Produces:** Scraped data, JSON output
-
----
-
-### 13. gaganfoxwell-skillify
-
-**Phase:** Implementation | **Triggers:** `skillify`, `codify this scrape`, `save this scrape`, `make this permanent`
-
-**What it does:** Codify a successful scrape into a permanent, reusable skill on disk. Future calls run in ~200ms.
-
-**Full source:** `src/skills/bundled/gaganfoxwell-skillify/SKILL.md`
-
-**Key workflow:**
-1. Confirm scrape flow exists
-2. Name the skill
-3. Synthesize scraper script (pure function: HTML in, data out)
-4. Capture fixture (real HTML snapshot)
-5. Write test (at least one non-smoke assertion)
-6. Stage the skill
-7. Run test
-8. Approval gate (mandatory)
-9. Commit or discard
-10. Verify
+**Inputs:** symptom description. **Outputs:** root cause, fix commit, regression
+test, investigation report.
 
 ---
 
-### 14. gaganfoxwell-careful
+## 6. gaganfoxwell-design-audit
 
-**Phase:** Safety | **Triggers:** `be careful`, `warn before destructive`, `safety mode`, `careful mode`, `prod mode`
+**What it contains**
 
-**What it does:** Warn before destructive commands. Checks every bash command against destructive patterns.
+Senior-designer visual audit of a live site with a fix loop:
 
-**Full source:** `src/skills/bundled/gaganfoxwell-careful/SKILL.md`
+- Modes: full (5–8 pages) / `--quick` (homepage+2) / `--deep` (10–15) /
+  diff-aware (feature branch, audits only pages your diff touches)
+- First-impression capture, page-area test, design-system extraction
+  (fonts/colors/heading scale/spacing flags)
+- Checklist per page: typography, spacing, hierarchy, WCAG contrast, layout,
+  interaction states, AI-slop detection (stock photos, decoration without
+  value), performance (CLS, heavy bundles)
+- Fix loop: classify HIGH/MEDIUM/POLISH → fix in source → atomic commit →
+  re-verify
+- UX principles embedded (don't-make-me-think, users scan/satisfice/muddle
+  through, billboard design, goodwill reservoir)
 
-**Protected patterns:**
-- `rm -rf` / `rm -r` / `rm --recursive`
-- `DROP TABLE` / `DROP DATABASE` / `TRUNCATE`
-- `git push --force` / `git reset --hard`
-- `git checkout .` / `git restore .`
-- `kubectl delete` / `docker rm -f` / `docker system prune`
+**How to use — step by step**
 
-**Safe exceptions:** `rm -rf node_modules`, `.next`, `dist`, `__pycache__`, `.cache`, `build`, `.turbo`, `coverage`
+1. Have the site running (localhost:3000 etc.) or give a URL.
+2. Say: `"Design audit http://localhost:3000"` (add `--quick` or `--deep`).
+3. Optionally scope it: `"Focus on the settings page."`
+4. Each finding gets fixed and committed atomically — watch the commits land.
+5. Get `docs/YYYY-MM-DD-<slug>-design-audit.md` with PASS/PASS WITH NOTES/
+   NEEDS WORK verdict.
 
-**Custom patterns:** Add to `.gaganfoxwell/careful-patterns.txt` (one POSIX ERE per line)
-
----
-
-### 15. gaganfoxwell-freeze
-
-**Phase:** Safety | **Triggers:** `freeze edits to directory`, `lock editing scope`, `restrict file changes`, `only edit this folder`
-
-**What it does:** Restrict file edits to a specific directory for the session.
-
-**Full source:** `src/skills/bundled/gaganfoxwell-freeze/SKILL.md`
-
-**How it works:**
-1. Ask user for directory path
-2. Store in `.gaganfoxwell/freeze-dir.txt`
-3. Before every Edit/Write, check if target starts with freeze directory
-4. If not, block the operation
+**Inputs:** URL (or feature branch). **Outputs:** fixes as commits, audit report.
 
 ---
 
-### 16. gaganfoxwell-guard
+## 7. gaganfoxwell-design-shotgun
 
-**Phase:** Safety | **Triggers:** `full safety mode`, `guard against mistakes`, `maximum safety`, `lock it down`
+**What it contains**
 
-**What it does:** Full safety mode — combines `/careful` (destructive command warnings) with `/freeze` (directory-scoped edits).
+Parallel design exploration:
 
-**Full source:** `src/skills/bundled/gaganfoxwell-guard/SKILL.md`
+- 5-dimension context gathering (who / job-to-be-done / what exists / user
+  flow / edge cases)
+- Taste memory: reads previously approved designs to bias toward your taste
+- Concept generation with anti-convergence rule (every variant must take a
+  visibly different direction — siblings get regenerated)
+- Self-contained HTML mockups per variant + a side-by-side comparison board
+- Structured feedback loop: per variant Approve / Reject / Iterate, max 3
+  iterations
+- Design tokens extraction from the winner.
 
----
+**How to use — step by step**
 
-### 17. gaganfoxwell-unfreeze
+1. Say: `"Show me design options for the pricing page."`
+2. Confirm context if asked (audience, flow).
+3. Open `docs/designs/pricing-page/comparison.html` in a browser.
+4. Reply per variant: `"A: iterate — darker palette"`, `"B: reject"`,
+   `"C: approve"`.
+5. Winner lands at `docs/designs/pricing-page/approved.html` + exploration notes.
 
-**Phase:** Safety | **Triggers:** `unfreeze edits`, `unlock all directories`, `remove edit restrictions`
-
-**What it does:** Clear the freeze boundary, allowing edits to all directories again.
-
-**Full source:** `src/skills/bundled/gaganfoxwell-unfreeze/SKILL.md`
-
----
-
-### 18. gaganfoxwell-readonly
-
-**Phase:** Safety | **Triggers:** `read only mode`, `readonly`, `no writes`, `inspect only`, `explore only`
-
-**What it does:** Read-only mode — no file writes, no git commits, no destructive operations.
-
-**Full source:** `src/skills/bundled/gaganfoxwell-readonly/SKILL.md`
-
-**Allowed:** Read, Glob, Grep, read-only bash (`ls`, `git status`, `git log`, `git diff`, `cat`, `head`, `tail`, `wc`, `find`, `tree`)
-
-**Blocked:** Edit/Write, `git add`/`commit`/`push`, `rm`/`mv`/`cp`
+**Inputs:** screen/page name + rough intent. **Outputs:** variant HTMLs,
+comparison board, approved design, design tokens.
 
 ---
 
-### 19. gaganfoxwell-private
+## 8. gaganfoxwell-design-html
 
-**Phase:** Safety | **Triggers:** `private mode`, `no external calls`, `local only`, `offline mode`
+**What it contains**
 
-**What it does:** Private mode — no external API calls, no web fetches, no data leaves the machine.
+Mockup-to-production HTML/CSS converter:
 
-**Full source:** `src/skills/bundled/gaganfoxwell-private/SKILL.md`
+- Input detection (approved shotgun mockups, DESIGN.md, or plain description)
+- Token extraction: colors, typography scale, spacing scale, breakpoints,
+  component inventory
+- Semantic HTML skeleton (header/nav/main/section/footer, ARIA, alt text)
+- CSS custom properties for every token; mobile-first media queries;
+  44px touch targets; hover/focus/active states; WCAG AA contrast
+- Output written to `docs/designs/<page>/index.html` + `styles.css` plus an
+  implementation report.
 
-**Allowed:** All file operations, local bash commands
+**How to use — step by step**
 
-**Blocked:** WebFetch/WebSearch, `curl`/`wget`, `npm install`/`pip install`
+1. After design-shotgun approves a variant (or with any reference),
+   say: `"Turn the approved pricing design into HTML."`
+2. Agent extracts tokens and writes semantic HTML + tokenized CSS.
+3. Open the file locally to inspect; request tweaks as normal edits.
+4. Report confirms responsive breakpoints + accessibility status.
 
-**Exception:** `localhost` / `127.0.0.1` connections allowed
-
----
-
-### 20. gaganfoxwell-learn
-
-**Phase:** Utility | **Triggers:** `show learnings`, `what have we learned`, `manage project learnings`, `prune learnings`, `export learnings`
-
-**What it does:** Review, search, prune, and export project learnings across sessions.
-
-**Full source:** `src/skills/bundled/gaganfoxwell-learn/SKILL.md`
-
-**Storage:** `.gaganfoxwell/learnings.jsonl` — each line is a JSON object with `skill`, `type`, `key`, `insight`, `confidence`, `source`, `ts`.
-
----
-
-### 21. gaganfoxwell-context-save
-
-**Phase:** Utility | **Triggers:** `save progress`, `save state`, `save my work`, `context save`
-
-**What it does:** Save working context — git state, decisions, remaining work.
-
-**Full source:** `src/skills/bundled/gaganfoxwell-context-save/SKILL.md`
-
-**Output:** `.gaganfoxwell/context/<branch>-<timestamp>.md` containing:
-- Git state (branch, last 5 commits, modified files)
-- Current task summary
-- Decisions made
-- Remaining work
-- Blockers
+**Inputs:** approved mockup / DESIGN.md / description. **Outputs:** production-
+ready index.html + styles.css + report.
 
 ---
 
-### 22. gaganfoxwell-context-restore
+## 9. gaganfoxwell-devex-audit
 
-**Phase:** Utility | **Triggers:** `resume where i left off`, `restore context`, `where was i`, `pick up where i left off`, `context restore`
+**What it contains**
 
-**What it does:** Restore working context saved earlier by context-save.
+Developer-experience audit that walks your onboarding like a real user:
 
-**Full source:** `src/skills/bundled/gaganfoxwell-context-restore/SKILL.md`
+- TTHW measurement (Time-To-Hello-World) against tiers: <2min Champion,
+  2–5 Competitive, 5–10 Needs Work, >10 Red Flag
+- 8-dimension scorecard 0–10 each: Getting Started, API/CLI/SDK ergonomics,
+  Error Messages (what happened/why/next-steps model), Documentation,
+  Upgrade Path, Dev Environment, Community, DX Measurement — each tagged
+  TESTED / PARTIAL / INFERRED
+- Findings split into Quick Wins (<1h), This-Sprint, Next-Quarter.
 
-**How it works:**
-1. Find most recent context file (prefer current branch)
-2. Read and extract task/decisions/remaining
-3. Verify git state matches
-4. Present summary and resume
+**How to use — step by step**
 
----
+1. Say: `"DX audit this repo"` or `"Try the onboarding and time it."`
+2. Point it at docs URL if the README doesn't have one.
+3. It follows your own quickstart literally — every snag is scored.
+4. Get the ASCII scorecard + `docs/YYYY-MM-DD-<slug>-dx-audit.md`.
 
-### 23. gaganfoxwell-first-task
-
-**Phase:** Utility | **Triggers:** `first task`, `new project setup`, `get started`, `initial setup`
-
-**What it does:** Handle the first task in a new project — orient, set up, and complete the first meaningful unit of work.
-
-**Full source:** `src/skills/bundled/gaganfoxwell-first-task/SKILL.md`
-
-**Key workflow:**
-1. Phase 1: Orient (read-only) — README, package.json, directory structure, CLAUDE.md, git history
-2. Phase 2: Conventions — code style, test patterns, file organization, commit format
-3. Phase 3: First task — ask user or suggest from TODOs
-4. Phase 4: Complete + commit — follow conventions, include tests, verify, commit
+**Inputs:** repo/docs URL. **Outputs:** DX scorecard, TTHW, prioritized fixes.
 
 ---
 
-### 24. gaganfoxwell-teach
+## 10. gaganfoxwell-qa
 
-**Phase:** Utility | **Triggers:** `teach you about`, `learn this pattern`, `remember this`, `project context`, `explain our approach`
+**What it contains**
 
-**What it does:** Teach the agent project-specific patterns, conventions, and context that aren't in the code.
+QA-engineer + fixer in one, for web apps:
 
-**Full source:** `src/skills/bundled/gaganfoxwell-teach/SKILL.md`
+- Tiers: `--quick` (critical/high), standard (+medium, default),
+  `--exhaustive` (+cosmetic); modes: full / diff-aware / smoke / regression
+  vs a saved baseline.json
+- Phases: init → authenticate (asks for OTP codes when needed) → orient
+  (framework detection) → explore every page (clicks, forms incl. empty/
+  invalid/edge, navigation, states, console after each interaction,
+  mobile viewport) → document immediately with before/action screenshots →
+  health score
+- Weighted health-score rubric (Console 15%, Functional 20%, UX 15%,
+  Accessibility 15%, Links 10%, Visual 10%, Performance 10%, Content 5%)
+- Bugs fixed in source with atomic commits, then re-verified; rules include
+  never reading source during testing (test as a user) and depth-over-breadth.
 
-**What to capture:**
-- Architectural decisions and why
-- Naming conventions
-- Domain context (business logic, terminology)
-- Gotchas (things that trip up newcomers)
-- Preferred patterns
+**How to use — step by step**
 
-**Storage:** `.gaganfoxwell/teachings.md`
+1. Run your app, then say: `"QA test http://localhost:3000"` (add
+   `--quick`/`--exhaustive`; add credentials if auth needed).
+2. Supply 2FA codes if prompted.
+3. Watch issues appear in the report as they're found (with screenshots).
+4. Fixes are committed per-issue and re-tested; final before/after scores shown.
+5. Verdict: SHIP / FIX MORE / BLOCK in `docs/YYYY-MM-DD-<slug>-qa-report.md`.
 
----
-
-### 25. gaganfoxwell-fork
-
-**Phase:** Utility | **Triggers:** `fork this`, `create worktree`, `parallel work`, `spin off`
-
-**What it does:** Fork a worktree for parallel work — create an isolated copy of the current state.
-
-**Full source:** `src/skills/bundled/gaganfoxwell-fork/SKILL.md`
-
-**How it works:**
-1. Determine fork name
-2. `git worktree add ../wt-<name> -b <name>`
-3. Copy `.env`, `.gaganfoxwell/` (not `node_modules/`)
-4. Report merge command
+**Inputs:** URL + optional tier/auth/scope. **Outputs:** fixed bugs (commits),
+health score before/after, QA report, regression baseline.
 
 ---
 
-### 26. gaganfoxwell-browse
+## 11. gaganfoxwell-qa-report
 
-**Phase:** Browser | **Triggers:** `browse a page`, `fetch a url`, `read this website`, `what's on this page`
+**What it contains**
 
-**What it does:** Fetch and read web pages using WebFetch — lightweight read-only browser alternative.
+The same QA methodology as `gaganfoxwell-qa` but strictly report-only — zero
+code changes. Produces the structured issue list, screenshots, repro steps,
+health score, and Top-3-to-fix. Use when someone else will do the fixing.
 
-**Full source:** `src/skills/bundled/gaganfoxwell-browse/SKILL.md`
+**How to use — step by step**
 
-**Capabilities:** Fetch any public URL, extract text/links/data, search the web
+1. Say: `"QA report only for http://localhost:3000"` or `"Just report bugs,
+   don't fix anything."`
+2. Same tier flags apply (`--quick`, `--exhaustive`).
+3. Collect the report; hand it to whoever fixes.
 
-**Limitations (vs full browser daemon):** No JavaScript execution, no SPAs, no forms, no cookies, no screenshots
+**Inputs:** URL. **Outputs:** QA report + health score + bug list. **No commits.**
+
+---
+
+## 12. gaganfoxwell-scrape
+
+**What it contains**
+
+Read-only web data extraction with a strict contract:
+
+- Step 1 takes a one-line intent ("top stories on HN"); asks once if missing
+- Step 2 refuses mutating intents (submit/post/login/fill/delete/book…) —
+  read-only by contract
+- Step 3 prototypes via WebFetch: fetch page → parse → identify data →
+  extract, with strategies for text / structured tables / links / metadata
+  (meta tags, JSON-LD)
+- Step 4 emits ONE JSON doc on stdout: `{ url, timestamp, items[], count }`
+- Step 5 single-line suggestion to run skillify (no nagging)
+- Failure honesty: after 3–4 failed extraction attempts it reports blockers
+  (JS-rendered, paywalled) and offers options instead of faking output.
+
+**How to use — step by step**
+
+1. Say: `"Scrape https://news.ycombinator.com — titles, links, points."`
+2. Get JSON back (pipe-friendly — no prose around the JSON unless asked).
+3. Want it reusable? Follow up with skillify.
+
+**Inputs:** URL + one-line intent. **Outputs:** JSON document.
+
+---
+
+## 13. gaganfoxwell-skillify
+
+**What it contains**
+
+Codifies a successful scrape into a permanent on-disk skill:
+
+- Synthesizes `script.ts` whose parser is a PURE function (HTML in → data out;
+  no network inside the parser) using only the final working approach
+- Captures a real fixture `fixtures/<host>-<date>.html`
+- Writes `script.test.ts` requiring non-smoke assertions (shape AND non-empty
+  key fields)
+- Stages everything (SKILL.md/script/test/fixture) → runs test → MANDATORY
+  approval gate (Commit / Look first / Discard) → atomic commit or discard
+- Post-commit verification that the codified run matches prototype output.
+
+**How to use — step by step**
+
+1. Right after a scrape you're happy with, say: `"Skillify this."`
+2. Confirm/choose the skill name.
+3. Tests run automatically; failures get ≤2 fix retries then abort cleanly.
+4. At the gate reply `A` (commit), `B` (show me the script first), or `C`
+   (discard).
+5. Confirmation line reports where it landed and the trigger phrase for
+   ~instant future runs.
+
+**Inputs:** a completed scrape session. **Outputs:** permanent skill dir
+(script + test + fixture + SKILL.md).
+
+---
+
+## 14. gaganfoxwell-careful
+
+**What it contains**
+
+Session-scoped guardrail mode. Every bash command is checked against
+destructive patterns before running:
+
+| Pattern family | Examples | Risk |
+|---|---|---|
+| Recursive delete | `rm -rf`, `rm -r` | Data loss |
+| SQL destruction | `DROP TABLE/DATABASE`, `TRUNCATE` | Data loss |
+| History rewrite | `git push --force/-f` | Remote rewrite |
+| Work loss | `git reset --hard`, `git checkout .`, `git restore .` | Uncommitted loss |
+| Infra deletion | `kubectl delete`, `docker rm -f`, `docker system prune` | Prod impact |
+
+Behavior: MEDIUM matches warn-and-ask (you can override); HIGH shapes hard-deny
+(`rm -r /`, force-push to default branch). Safe exceptions never warn
+(`rm -rf node_modules/.next/dist/__pycache__/.cache/build/.turbo/coverage`).
+Add project rules via `.gaganfoxwell/careful-patterns.txt` (additive only).
+
+**How to use — step by step**
+
+1. Before risky work say: `"Be careful"` / `"Enable safety mode."`
+2. Work normally; destructive commands trigger a warning you confirm.
+3. Mode lasts for the session; end session to clear.
+
+---
+
+## 15. gaganfoxwell-freeze
+
+**What it contains**
+
+Edit-scope lock. Edits outside one allowed directory are BLOCKED (not warned):
+
+- Setup asks for the directory; stores boundary in
+  `.gaganfoxwell/freeze-dir.txt`
+- Every Edit/Write is checked against the resolved absolute path; symlinks
+  resolve through their final component; trailing `/` stops `/src` matching
+  `/src-old`
+- Read/Glob/Grep/Bash unaffected — this blocks accidental edits, it is not a
+  security sandbox (bash can still touch other paths).
+
+**How to use — step by step**
+
+1. Say: `"Freeze edits to src/auth/"`.
+2. Confirmation names the boundary.
+3. Any attempted edit elsewhere gets blocked with an explanation.
+4. Change boundary by re-running freeze; clear with unfreeze.
+
+---
+
+## 16. gaganfoxwell-guard
+
+**What it contains**
+
+Maximum safety = careful + freeze together: destructive-command warnings AND
+directory-scoped editing active simultaneously. For prod debugging or shared
+environments.
+
+**How to use — step by step**
+
+1. Say: `"Full safety mode"` / `"Lock it down"`.
+2. Name the directory to freeze when asked.
+3. Both protections run until session ends (or unfreeze for the edit part).
+
+---
+
+## 17. gaganfoxwell-unfreeze
+
+**What it contains**
+
+Clears the freeze boundary set by freeze/guard: reads `.gaganfoxwell/
+freeze-dir.txt`, announces the previous boundary, deletes it. Careful-mode
+warnings remain active.
+
+**How to use:** say `"Unfreeze"` → confirmation shows old boundary → all
+directories editable again.
+
+---
+
+## 18. gaganfoxwell-readonly
+
+**What it contains**
+
+Hard look-don't-touch mode. Allowed: Read/Glob/Grep + read-only bash (`ls`,
+`git status/log/diff`, `cat`, `head/tail`, `wc`, `find`, `tree`). Blocked:
+Edit/Write, `git add/commit/push`, `rm/mv/cp`, any state-changing command.
+Toggle behavior — running it again disables.
+
+**How to use — step by step**
+
+1. Say: `"Read-only mode"` before exploring an unfamiliar/untrusted codebase.
+2. Ask questions freely; write attempts get blocked with a notice.
+3. Say `"read only"` again (or end session) to lift.
+
+---
+
+## 19. gaganfoxwell-private
+
+**What it contains**
+
+No-exfiltration mode. Blocked: WebFetch/WebSearch, `curl/wget` to external
+hosts, package installs that hit the network. Allowed: all local file work,
+local git/npm scripts, and connections to localhost/127.0.0.1.
+
+**How to use — step by step**
+
+1. Say: `"Private mode"` when handling proprietary/sensitive code.
+2. External-fetch attempts are blocked with an explanation.
+3. Toggle off by repeating the phrase or ending the session.
+
+---
+
+## 20. gaganfoxwell-learn
+
+**What it contains**
+
+Project-memory manager over `.gaganfoxwell/learnings.jsonl`. Entries carry
+skill, type, key, insight, confidence(1–10), source, timestamp. Operations:
+list as a table, keyword search ("haven't we seen this before?"), prune
+(older than 90 days or confidence <3 — always asks first), export as markdown
+for teammates/handoffs. Logging rule: only durable learnings worth 5+ minutes;
+explicit "no durable learnings" when none.
+
+**How to use — step by step**
+
+1. `"What have we learned?"` → formatted table.
+2. `"Any learnings about auth cookies?"` → filtered matches.
+3. `"Prune stale learnings"` → review list → confirm deletions.
+4. `"Export learnings"` → markdown block to share.
+
+---
+
+## 21. gaganfoxwell-context-save
+
+**What it contains**
+
+Session checkpoint writer → `.gaganfoxwell/context/<branch>-<timestamp>.md`
+containing: git state (branch, last 5 commits, modified files), 2–3 sentence
+task summary, decisions with rationale (`[decision] X — why`), remaining-work
+checklist, blockers. Kept small — summaries, not raw diffs.
+
+**How to use — step by step**
+
+1. Before stopping (or before a risky operation) say: `"Save my progress."`
+2. File path is echoed back.
+3. Pair with context-restore next session.
+
+---
+
+## 22. gaganfoxwell-context-restore
+
+**What it contains**
+
+Resumes the newest checkpoint, preferring the current branch. Steps: locate
+file → extract task/decisions/remaining/blockers → verify git still matches
+(warns on branch mismatch/stale state — never blindly applies) → prints a
+resumption brief (Task/Done/Left/Decisions/Blockers) so work continues.
+
+**How to use:** new session → `"Where was I?"` or `"Resume where I left off"`
+→ confirm brief looks right → continue.
+
+---
+
+## 23. gaganfoxwell-first-task
+
+**What it contains**
+
+New-project onboarding: Phase 1 Orient (README, manifests, tree, agent docs,
+recent git history — all read-only); Phase 2 Conventions (style, tests,
+organization, commit format — inferred from code if undocumented);
+Phase 3 pick a first task (yours, or suggested from TODOs/tests/doc gaps);
+Phase 4 complete it conventionally with tests, verified build, clean commit.
+
+**How to use:** drop the agent into a fresh repo → `"First task"` → answer
+what-to-build (or accept a suggestion) → receive a small proven commit.
+
+---
+
+## 24. gaganfoxwell-teach
+
+**What it contains**
+
+Captures tribal knowledge absent from code into `.gaganfoxwell/teachings.md`
+under five sections: Architecture decisions + trade-offs, Naming conventions,
+Domain context (business terms/rules), Gotchas ("don't touch X without Y"),
+Preferred patterns ("features go in src/features/"). Checked FIRST when new
+tasks start — these override generic best practice.
+
+**How to use — step by step**
+
+1. Say: `"Teach you about our billing domain"` or dump context and say
+   `"Remember this."`
+2. Agent distills it into the five sections (concise bullets) and saves.
+3. Update anytime the project evolves; future sessions inherit it.
+
+---
+
+## 25. gaganfoxwell-fork
+
+**What it contains**
+
+Manual parallel-work isolation via `git worktree add ../wt-<name> -b <name>`:
+refuses when uncommitted changes exist (commit/stash first), copies `.env`
+and `.gaganfoxwell/` (never node_modules — run install there), reports cd +
+merge-back commands. Note: `baton new "<task>"` does this automatically inside
+Baton coordination — this skill is for manual/outside-Baton forks.
+
+**How to use — step by step**
+
+1. `"Fork this as experiment-redesign."`
+2. Clean-tree check passes → worktree created at `../wt-experiment-redesign`.
+3. `cd ../wt-experiment-redesign && npm install` → work there.
+4. Merge later: `git merge experiment-redesign` from the main checkout.
+
+---
+
+## 26. gaganfoxwell-browse
+
+**What it contains**
+
+Lightweight read-only page reader built on WebFetch: fetch any public URL,
+extract text/links/tables/metadata, return structured data. Explicit limits:
+no JS execution, no SPAs, no form interaction, no cookies/sessions, no
+screenshots. Rules: respect robots.txt, never fetch authenticated pages,
+cache within session, and honestly redirect JS-heavy targets to a real
+browser daemon.
+
+**How to use — step by step**
+
+1. `"Fetch https://example.com/docs and list the API endpoints."`
+2. Content returns summarized/structured per your ask.
+3. If the page needs JS, you'll be told instead of getting empty results.
 
 ---
 
@@ -509,4 +719,5 @@ Below is the complete SKILL.md content for each skill.
 | catalog.ts SKILL_EXPLAIN | 26/26 registered |
 | Build (`npm run build`) | Passing |
 | `skills list` output | All 26 appear |
+| Source-name audit | 0 references to origin project anywhere in shipped code |
 | Git pushed | All commits pushed to `Gagan-k0/baton-gaganfoxwel` |
