@@ -29,7 +29,7 @@ or "what's on this page".
 - Search the web for information
 - Read documentation sites, blog posts, API docs
 
-## Limitations (vs GStack's browser daemon)
+## Limitations (vs full browser daemon)
 
 This is a **read-only, HTTP-level** fetch. It cannot:
 - Execute JavaScript
@@ -38,7 +38,7 @@ This is a **read-only, HTTP-level** fetch. It cannot:
 - Maintain session state or cookies
 - Take screenshots of rendered pages
 
-For full browser automation, use GStack's browse daemon (requires Bun).
+For full browser automation, a dedicated browser daemon (e.g. Bun-based) is required.
 
 ## Workflow
 
