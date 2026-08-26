@@ -82,6 +82,128 @@ baton skills install gaganfoxwell-qa   # install one into an agent
 
 ---
 
+## Where to Use Each Skill Effectively (Scenario Playbook)
+
+Match your situation to a playbook. Each lists the skills, in order, with why.
+
+### Scenario 1 — Starting a brand-new project
+| Order | Skill | Why |
+|---|---|---|
+| 1 | `gaganfoxwell-first-task` | Orients the agent: reads README, infers conventions, ships a small proven first commit |
+| 2 | `gaganfoxwell-office-hours` | If the project is a product idea — validate demand before writing real code |
+| 3 | `gaganfoxwell-teach` | Dump the domain knowledge in your head into `teachings.md` so every future session inherits it |
+
+### Scenario 2 — Building a new feature end-to-end (the full quality loop)
+| Order | Skill | Why |
+|---|---|---|
+| 1 | `gaganfoxwell-office-hours` | Reframe the problem; pick narrow-wedge vs balanced vs full vision |
+| 2 | `gaganfoxwell-ceo-review` | Challenge scope/ambition; catch "building the wrong thing" early |
+| 3 | `gaganfoxwell-eng-review` | Lock architecture, error paths, test matrix before any code exists |
+| 4 | *(implement)* + `gaganfoxwell-freeze` | Freeze edits to the feature directory so debugging doesn't sprawl |
+| 5 | `gaganfoxwell-review` | Pre-landing diff review with confidence-calibrated findings |
+| 6 | `gaganfoxwell-qa` | Test like a user; fix and re-verify with atomic commits |
+| 7 | `gaganfoxwell-context-save` | Checkpoint decisions + remaining work when you stop |
+
+This chain is where the biggest coding-quality gains live: office-hours/ceo-review
+prevent wasted builds, eng-review prevents architectural rework, review+qa prevent
+landed bugs.
+
+### Scenario 3 — Debugging anything non-trivial
+| Order | Skill | Why |
+|---|---|---|
+| 1 | `gaganfoxwell-investigate` | Iron Law: root cause before fix; 3-strike rule stops guess-fixing |
+| 2 | `gaganfoxwell-freeze` | Lock edits to the suspect module — no accidental "improvements" elsewhere |
+| 3 | `gaganfoxwell-learn` (after) | Log the insight so the same bug never costs you twice |
+
+Skip investigate only for trivially obvious breaks (typo-level). The moment you
+catch yourself trying fix #2 without evidence, switch to investigate.
+
+### Scenario 4 — Before merging ANY pull request
+- `gaganfoxwell-review` — always. It catches SQL safety, race conditions, trust
+  boundaries, and scope drift that tests and CI structurally miss.
+- Add `gaganfoxwell-qa-report` if the change touches user-visible flows and you
+  want browser-tested evidence attached to the merge decision.
+
+### Scenario 5 — Frontend / UI work
+| Order | Skill | Why |
+|---|---|---|
+| 1 | `gaganfoxwell-design-shotgun` | See 3 genuinely different directions side-by-side before committing to one |
+| 2 | `gaganfoxwell-design-html` | Turn the approved direction into semantic, responsive, WCAG-AA HTML/CSS |
+| 3 | `gaganfoxwell-design-audit` | Polish pass on the live page — typography, spacing, AI-slop detection, fixes committed atomically |
+
+### Scenario 6 — Shipping a developer-facing tool / library / API
+- `gaganfoxwell-devex-audit` — walk your own quickstart as a stranger; measure
+  TTHW; fix the top friction points. Do this BEFORE announcing, not after.
+- Pair with `gaganfoxwell-qa-report` for docs pages and examples.
+
+### Scenario 7 — Handling sensitive / proprietary code
+| Situation | Skills |
+|---|---|
+| Code must never leave the machine | `gaganfoxwell-private` (blocks all external calls) |
+| You only need to look, not touch | `gaganfoxwell-readonly` (hard no-write mode) |
+| Both at once | activate private + readonly together |
+| Auditing an unfamiliar/untrusted repo | `gaganfoxwell-readonly` + `gaganfoxwell-careful` |
+
+### Scenario 8 — Working near production or shared infrastructure
+- `gaganfoxwell-guard` — destructive-command warnings + edit scoping together.
+- Drop to plain `gaganfoxwell-careful` if you still need repo-wide edit access.
+
+### Scenario 9 — Long-running, multi-session work
+- `gaganfoxwell-context-save` at every stopping point → `gaganfoxwell-context-restore`
+  at every start. This is how agents resume across sessions/machines without
+  losing decisions.
+- `gaganfoxwell-learn` after each notable fix — compounds into a project brain.
+
+### Scenario 10 — Extracting data from the web
+| Order | Skill | Why |
+|---|---|---|
+| 1 | `gaganfoxwell-scrape` | One-shot JSON extraction, read-only contract |
+| 2 | `gaganfoxwell-skillify` | Only if you'll repeat it — codifies into a permanent tested skill |
+
+### Scenario 11 — Experimenting in parallel
+- `gaganfoxwell-fork` for manual worktree isolation (or `baton new` inside Baton
+  coordination). Run two approaches side-by-side; merge the winner.
+
+---
+
+## Using Skills Together for Better Coding — Practical Rules
+
+1. **Plan skills are cheap; wrong builds are expensive.** Running
+   office-hours → ceo-review → eng-review costs minutes. Rebuilding a feature
+   because nobody challenged the premise costs days.
+2. **Never land a diff without `review`.** Its confidence scoring means you
+   only act on findings backed by quoted code — low noise, high signal.
+3. **Freeze during every debug session.** Scope creep during debugging is the
+   #1 way unrelated regressions sneak in.
+4. **Test as a user (`qa`), then read code.** qa's rule "never read source
+   while testing" finds real-user breakage that code-reading normalizes away.
+5. **Report vs fix deliberately.** Use `qa` when you own the codebase; use
+   `qa-report` when handing evidence to another team/agent.
+6. **Checkpoint obsessively.** `context-save` before ending any session,
+   before risky refactors, and before switching branches.
+7. **Feed the memory loop.** After any fix that took real investigation:
+   log it via `learn`; after any verbal explanation of "how we do things":
+   capture via `teach`. Future sessions start smarter.
+8. **Safety modes are toggles, not installs.** Activate per-session:
+   `guard` near prod, `private` for sensitive work, `readonly` for exploration.
+9. **One skill at a time for planning; stack safety skills freely.**
+   Planning skills each expect the floor; careful/freeze/private/readonly
+   compose safely.
+
+### When NOT to use a skill (anti-patterns)
+
+| Don't | Because |
+|---|---|
+| Run `office-hours` for a typo fix | Planning skills want a problem worth diagnosing |
+| Run `investigate` before checking obvious causes | Overkill for reproducible one-line breaks |
+| `skillify` a one-off scrape | Permanent skills earn their keep through repetition |
+| `design-shotgun` without intent to compare | Variants without feedback waste generation effort |
+| Skip `context-save` because "I'll remember" | Agents don't — that's the point of the skill |
+| Stack two planning skills simultaneously | They each drive the conversation; run them in sequence instead |
+
+---
+
+
 # Skill Catalog — Full Details
 
 ---
