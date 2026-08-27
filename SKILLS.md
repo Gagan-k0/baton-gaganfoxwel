@@ -5554,8 +5554,318 @@ the directory restriction set by `/freeze` or `/guard`.
 
 ## Notes
 
-- Only clears the freeze boundary â€” destructive command warnings from
+- Only clears the freeze boundary — destructive command warnings from
   `/careful` remain active for the session
 - To clear everything, end the session
 ````
+
+---
+
+# COMPREHENSIVE SKILL USAGE REPORT
+
+> This section provides detailed guidance on when, where, and how to use each
+> gaganfoxwell skill effectively for better coding outcomes.
+
+---
+
+## SKILL USAGE BY PROJECT TYPE
+
+### Web Applications (Landing Pages, E-commerce, SaaS)
+**Primary Skills:**
+- `gaganfoxwell-design-audit` — visual polish, typography, spacing
+- `gaganfoxwell-design-html` — convert mockups to production HTML/CSS
+- `gaganfoxwell-qa` — test user flows, forms, navigation
+- `gaganfoxwell-review` — catch SQL injection, XSS, race conditions
+
+**Example Workflow:**
+```
+1. gaganfoxwell-design-shotgun → explore design directions
+2. gaganfoxwell-design-html → build the approved design
+3. gaganfoxwell-design-audit → polish and fix visual issues
+4. gaganfoxwell-qa → test all user flows
+5. gaganfoxwell-review → security and code quality check
+```
+
+### APIs and Backend Services
+**Primary Skills:**
+- `gaganfoxwell-eng-review` — lock architecture before coding
+- `gaganfoxwell-investigate` — debug production issues
+- `gaganfoxwell-review` — catch race conditions, SQL safety
+- `gaganfoxwell-qa-report` — test endpoints systematically
+
+**Example Workflow:**
+```
+1. gaganfoxwell-office-hours → validate API design decisions
+2. gaganfoxwell-eng-review → lock data flow and error handling
+3. [implement] + gaganfoxwell-freeze → stay scoped
+4. gaganfoxwell-review → catch security issues
+5. gaganfoxwell-qa-report → document API behavior
+```
+
+### Mobile Apps (React Native, Flutter)
+**Primary Skills:**
+- `gaganfoxwell-design-audit` — UI/UX polish
+- `gaganfoxwell-qa` — test gestures, navigation, offline behavior
+- `gaganfoxwell-investigate` — debug platform-specific issues
+
+### Developer Tools / CLI / Libraries
+**Primary Skills:**
+- `gaganfoxwell-devex-audit` — test onboarding experience
+- `gaganfoxwell-review` — API safety, backward compatibility
+- `gaganfoxwell-qa` — test edge cases in usage patterns
+
+---
+
+## SKILL USAGE BY TEAM ROLE
+
+### For Product Managers / Founders
+**Use these skills:**
+- `gaganfoxwell-office-hours` — validate product ideas before building
+- `gaganfoxwell-ceo-review` — challenge scope and ambition
+- `gaganfoxwell-design-shotgun` — explore design directions
+
+**Example:**
+```
+"I want to build a restaurant ordering system."
+→ Use gaganfoxwell-office-hours to validate the idea
+→ Use gaganfoxwell-ceo-review to challenge scope
+```
+
+### For Frontend Developers
+**Use these skills:**
+- `gaganfoxwell-design-html` — convert mockups to code
+- `gaganfoxwell-design-audit` — polish visual design
+- `gaganfoxwell-review` — catch React-specific issues
+- `gaganfoxwell-qa` — test user interactions
+
+**Example:**
+```
+"Turn this Figma mockup into code."
+→ Use gaganfoxwell-design-html
+
+"Polish the settings page."
+→ Use gaganfoxwell-design-audit --quick
+```
+
+### For Backend Developers
+**Use these skills:**
+- `gaganfoxwell-eng-review` — lock architecture
+- `gaganfoxwell-investigate` — debug production issues
+- `gaganfoxwell-review` — catch SQL, race conditions
+- `gaganfoxwell-freeze` — stay scoped during debugging
+
+**Example:**
+```
+"Debug why login fails with 500."
+→ Use gaganfoxwell-investigate
+
+"Review my database migration."
+→ Use gaganfoxwell-review
+```
+
+### For DevOps / SRE
+**Use these skills:**
+- `gaganfoxwell-guard` — safety mode near production
+- `gaganfoxwell-careful` — destructive command warnings
+- `gaganfoxwell-readonly` — inspect without modifying
+- `gaganfoxwell-investigate` — debug production incidents
+
+**Example:**
+```
+"Check the production database schema."
+→ Use gaganfoxwell-readonly + gaganfoxwell-careful
+
+"Debug the deployment failure."
+→ Use gaganfoxwell-investigate
+```
+
+---
+
+## SKILL USAGE BY DEVELOPMENT PHASE
+
+### Phase 1: Ideation & Planning
+**Skills to use:**
+1. `gaganfoxwell-office-hours` — validate the problem
+2. `gaganfoxwell-ceo-review` — challenge scope
+3. `gaganfoxwell-eng-review` — lock architecture
+
+**Time investment:** 15-30 minutes
+**Value:** Prevents weeks of wasted building
+
+### Phase 2: Implementation
+**Skills to use:**
+1. `gaganfoxwell-freeze` — stay scoped
+2. `gaganfoxwell-review` — catch issues before landing
+3. `gaganfoxwell-investigate` — debug when stuck
+
+**Time investment:** Continuous
+**Value:** Catches bugs before they ship
+
+### Phase 3: Testing & QA
+**Skills to use:**
+1. `gaganfoxwell-qa` — test like a user
+2. `gaganfoxwell-qa-report` — document findings
+3. `gaganfoxwell-design-audit` — visual polish
+
+**Time investment:** 10-20 minutes per feature
+**Value:** Catches real-user breakage
+
+### Phase 4: Pre-Launch
+**Skills to use:**
+1. `gaganfoxwell-review` — final code review
+2. `gaganfoxwell-qa` — full regression test
+3. `gaganfoxwell-devex-audit` — test developer experience
+
+**Time investment:** 30-60 minutes
+**Value:** Last line of defense
+
+### Phase 5: Maintenance
+**Skills to use:**
+1. `gaganfoxwell-investigate` — debug production issues
+2. `gaganfoxwell-learn` — log insights
+3. `gaganfoxwell-context-save` — checkpoint progress
+
+**Time investment:** As needed
+**Value:** Builds project knowledge over time
+
+---
+
+## SKILL COMBINATION RECIPES
+
+### Recipe 1: "New Feature from Scratch"
+```
+gaganfoxwell-office-hours (5 min)
+    ↓
+gaganfoxwell-ceo-review (10 min)
+    ↓
+gaganfoxwell-eng-review (10 min)
+    ↓
+[implement + gaganfoxwell-freeze]
+    ↓
+gaganfoxwell-review (5 min)
+    ↓
+gaganfoxwell-qa (10 min)
+    ↓
+gaganfoxwell-context-save (2 min)
+```
+**Total overhead:** ~42 minutes
+**Value:** Prevents wrong builds, catches bugs early
+
+### Recipe 2: "Debug Production Issue"
+```
+gaganfoxwell-readonly + gaganfoxwell-careful (safety first)
+    ↓
+gaganfoxwell-investigate (find root cause)
+    ↓
+gaganfoxwell-freeze (stay scoped)
+    ↓
+[fix + test]
+    ↓
+gaganfoxwell-learn (log the insight)
+```
+**Total overhead:** ~15 minutes
+**Value:** Structured debugging, prevents guess-fixing
+
+### Recipe 3: "Polish Existing UI"
+```
+gaganfoxwell-design-audit --quick (10 min)
+    ↓
+[fix findings]
+    ↓
+gaganfoxwell-qa (10 min)
+    ↓
+gaganfoxwell-review (5 min)
+```
+**Total overhead:** ~25 minutes
+**Value:** Professional visual quality
+
+### Recipe 4: "Hand Off to Another Agent"
+```
+gaganfoxwell-context-save (2 min)
+    ↓
+gaganfoxwell-teach (5 min)
+    ↓
+[other agent: gaganfoxwell-context-restore]
+```
+**Total overhead:** ~7 minutes
+**Value:** Seamless agent transitions
+
+---
+
+## QUICK REFERENCE: WHEN TO USE EACH SKILL
+
+| Situation | Skill | Time | Why |
+|-----------|-------|------|-----|
+| "Is this idea worth building?" | `gaganfoxwell-office-hours` | 5-10 min | Validates demand before coding |
+| "Am I building the right thing?" | `gaganfoxwell-ceo-review` | 10-15 min | Challenges scope and ambition |
+| "Lock in the architecture" | `gaganfoxwell-eng-review` | 10-15 min | Prevents architectural rework |
+| "Review my code before merge" | `gaganfoxwell-review` | 5-10 min | Catches bugs tests miss |
+| "Debug this non-obvious issue" | `gaganfoxwell-investigate` | 10-20 min | Root cause before fix |
+| "Polish the visual design" | `gaganfoxwell-design-audit` | 10-15 min | Professional visual quality |
+| "Show me design options" | `gaganfoxwell-design-shotgun` | 10-15 min | Explores multiple directions |
+| "Build this mockup" | `gaganfoxwell-design-html` | 15-20 min | Production-ready HTML/CSS |
+| "Test the user experience" | `gaganfoxwell-qa` | 10-15 min | Finds real-user breakage |
+| "Report bugs without fixing" | `gaganfoxwell-qa-report` | 10-15 min | Evidence for other teams |
+| "Extract data from this page" | `gaganfoxwell-scrape` | 5-10 min | One-shot data extraction |
+| "Make this scrape permanent" | `gaganfoxwell-skillify` | 10-15 min | Creates reusable skill |
+| "Be careful near prod" | `gaganfoxwell-careful` | Instant | Destructive command warnings |
+| "Only edit this directory" | `gaganfoxwell-freeze` | Instant | Prevents scope creep |
+| "Full safety mode" | `gaganfoxwell-guard` | Instant | Warnings + edit scoping |
+| "Unlock all directories" | `gaganfoxwell-unfreeze` | Instant | Clears freeze boundary |
+| "Read only mode" | `gaganfoxwell-readonly` | Instant | No writes allowed |
+| "No external calls" | `gaganfoxwell-private` | Instant | Data stays local |
+| "What have we learned?" | `gaganfoxwell-learn` | 2-5 min | Reviews project knowledge |
+| "Save my progress" | `gaganfoxwell-context-save` | 2 min | Checkpoints work |
+| "Resume where I left off" | `gaganfoxwell-context-restore` | 2 min | Restores context |
+| "First task in new project" | `gaganfoxwell-first-task` | 5-10 min | Orients agent to codebase |
+| "Remember this pattern" | `gaganfoxwell-teach` | 5 min | Captures project knowledge |
+| "Fork for parallel work" | `gaganfoxwell-fork` | 2 min | Creates isolated worktree |
+| "Fetch this web page" | `gaganfoxwell-browse` | 1-2 min | Read-only web access |
+
+---
+
+## ANTI-PATTERNS: WHEN NOT TO USE SKILLS
+
+| Don't | Because | Use Instead |
+|-------|---------|-------------|
+| `office-hours` for typo fixes | Planning skills want real problems | Just fix it |
+| `investigate` for obvious errors | Overkill for one-line breaks | Check the error message |
+| `skillify` one-off scrapes | Permanent skills need repetition | Use `scrape` directly |
+| `design-shotgun` without comparing | Variants waste time without feedback | Have a decision ready |
+| Skip `context-save` | Agents forget between sessions | Always checkpoint |
+| Stack two planning skills | They compete for control | Run sequentially |
+| `qa` on non-interactive code | Testing needs user flows | Use `review` instead |
+| `review` without a diff | No changes = nothing to review | Make changes first |
+
+---
+
+## MEASURING SKILL EFFECTIVENESS
+
+Track these metrics to see if skills are helping:
+
+1. **Bug escape rate:** How many bugs reach production?
+   - Before skills: baseline
+   - After skills: should decrease
+
+2. **Rework frequency:** How often do you rebuild things?
+   - Before skills: frequent rewrites
+   - After skills: plan skills prevent wrong builds
+
+3. **Debugging time:** How long to fix issues?
+   - Before skills: guess-fix cycles
+   - After skills: `investigate` finds root cause fast
+
+4. **Code review quality:** How many issues caught pre-merge?
+   - Before skills: basic review
+   - After skills: `review` catches SQL, races, trust boundaries
+
+5. **Agent handoff success:** How often do agents resume correctly?
+   - Before skills: lost context
+   - After skills: `context-save/restore` maintains state
+
+---
+
+*Report generated: 2026-08-27*
+*Skills integrated: 26 gaganfoxwell + 13 original = 39 total*
+*Baton version: 0.2.0*
 
