@@ -287,12 +287,12 @@ const SKILL_EXPLAIN: Record<string, SkillExplain> = {
   },
   'gaganfoxwell-office-hours': {
     what: 'YC-style product diagnosis — six forcing questions that expose demand reality.',
-    how: 'Startup mode: diagnostic on demand, status quo, wedge, observation, future-fit. Builder mode: design thinking for side projects and hackathons.',
+    how: 'Startup mode: demand diagnostic — 6 forcing questions. Builder mode: design thinking for side projects.',
     win: 'No code written until the problem is worth solving. Design doc saved.',
   },
   'gaganfoxwell-ceo-review': {
     what: 'CEO/founder-mode plan review — find the 10-star product in the request.',
-    how: 'Premise challenge → dream state mapping → 4 review modes (expansion/selective/hold/reduction) → 11-section deep review → failure modes → verdict.',
+    how: 'Premise challenge → dream state → 4 review modes → 11-section deep review → failure modes → verdict.',
     win: 'Every landmine caught before it explodes. Scope is deliberate, not accidental.',
   },
   'gaganfoxwell-eng-review': {
@@ -302,7 +302,7 @@ const SKILL_EXPLAIN: Record<string, SkillExplain> = {
   },
   'gaganfoxwell-review': {
     what: 'Pre-landing code review — catch bugs that pass CI but break in prod.',
-    how: 'Scope drift detection → critical pass (SQL, race conditions, trust boundaries) → specialist dispatch → confidence-calibrated findings → verdict.',
+    how: 'Scope drift → critical pass (SQL, races, trust) → specialist dispatch → confidence-scored findings → verdict.',
     win: 'Every finding verified, confidence-scored, and actionable. No false positive noise.',
   },
   'gaganfoxwell-investigate': {
