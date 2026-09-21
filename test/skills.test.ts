@@ -6,21 +6,24 @@ import {
 } from '../src/skills/install.js';
 import { bundledSkills, type SkillDef } from '../src/skills/catalog.js';
 
+import { join } from 'node:path';
+
 describe('skillTargetFor', () => {
   it('maps each supported agent to its skill file + references dir', () => {
-    expect(skillTargetFor('claude', 'bug-fix', '/repo')).toMatchObject({
-      agent: 'claude', rel: '.claude/skills/bug-fix/SKILL.md',
-      path: '/repo/.claude/skills/bug-fix/SKILL.md', refsDir: '/repo/.claude/skills/bug-fix',
+    const root = '/repo';
+    expect(skillTargetFor('claude', 'bug-fix', root)).toMatchObject({
+      agent: 'claude', rel: join('.claude', 'skills', 'bug-fix', 'SKILL.md'),
+      path: join(root, '.claude', 'skills', 'bug-fix', 'SKILL.md'), refsDir: join(root, '.claude', 'skills', 'bug-fix'),
     });
-    expect(skillTargetFor('cursor', 'bug-fix', '/repo')).toMatchObject({
-      agent: 'cursor', rel: '.cursor/rules/bug-fix.mdc',
-      path: '/repo/.cursor/rules/bug-fix.mdc', refsDir: '/repo/.cursor/rules/bug-fix',
+    expect(skillTargetFor('cursor', 'bug-fix', root)).toMatchObject({
+      agent: 'cursor', rel: join('.cursor', 'rules', 'bug-fix.mdc'),
+      path: join(root, '.cursor', 'rules', 'bug-fix.mdc'), refsDir: join(root, '.cursor', 'rules', 'bug-fix'),
     });
     // W4 — Antigravity reads .agents/skills/<id>/SKILL.md (same layout as Claude;
     // verified against a live Antigravity workspace, references/ included).
-    expect(skillTargetFor('antigravity', 'bug-fix', '/repo')).toMatchObject({
-      agent: 'antigravity', rel: '.agents/skills/bug-fix/SKILL.md',
-      path: '/repo/.agents/skills/bug-fix/SKILL.md', refsDir: '/repo/.agents/skills/bug-fix',
+    expect(skillTargetFor('antigravity', 'bug-fix', root)).toMatchObject({
+      agent: 'antigravity', rel: join('.agents', 'skills', 'bug-fix', 'SKILL.md'),
+      path: join(root, '.agents', 'skills', 'bug-fix', 'SKILL.md'), refsDir: join(root, '.agents', 'skills', 'bug-fix'),
     });
   });
 

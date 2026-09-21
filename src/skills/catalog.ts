@@ -523,6 +523,12 @@ async function loadOneFileSkill(id: string): Promise<SkillDef | null> {
   // raw is byte-faithful only when the on-disk name already equals the id.
   const nameMatchesId = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') === id;
 
+  const explainFallback = SKILL_EXPLAIN[id] ?? {
+    what: `Specialist workflow for ${name.replace(/^gaganfoxwell-?/i, '').trim() || id}`.slice(0, 110),
+    how: `Run via slash command /${id.replace(/^gaganfoxwell-/, '')} or install with baton.`.slice(0, 110),
+    win: `Automated verification and structured steps for ${name.replace(/^gaganfoxwell-?/i, '').trim() || id}.`.slice(0, 110),
+  };
+
   return {
     id,
     name,
@@ -532,7 +538,7 @@ async function loadOneFileSkill(id: string): Promise<SkillDef | null> {
     body: parsed.content.trim() + '\n',
     references,
     source: 'bundled',
-    explain: SKILL_EXPLAIN[id],
+    explain: explainFallback,
     raw: nameMatchesId ? raw : undefined,
   };
 }

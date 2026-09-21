@@ -113,7 +113,7 @@ export function renderSkill(agent: SkillAgent, skill: SkillDef): string {
     let out = `---\ndescription: ${frontmatterValue(skill.description)}\nalwaysApply: false\n---\n\n${skill.body.trimEnd()}\n`;
     if (skill.references.length) {
       out += `\n---\n\n## Reference files\n\nThis skill ships supporting files, copied next to this rule under \`${skill.id}/\`:\n`
-        + skill.references.map((r) => `- \`${join(skill.id, r.rel)}\``).join('\n') + '\n';
+        + skill.references.map((r) => `- \`${join(skill.id, r.rel).replace(/\\/g, '/')}\``).join('\n') + '\n';
     }
     return out;
   }
