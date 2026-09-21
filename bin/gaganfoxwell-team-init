@@ -1,0 +1,216 @@
+#!/usr/bin/env bash
+# gaganfoxwell-team-init — generate repo-level bootstrap files for team mode
+#
+# Usage:
+#   gaganfoxwell-team-init optional   # gentle CLAUDE.md suggestion, one-time offer
+#   gaganfoxwell-team-init required   # CLAUDE.md enforcement + PreToolUse hook
+#
+# Run from the root of your team's repo (not from the gaganfoxwell directory).
+
+# Heredoc delivery guard. bash 5.2+ writes a heredoc body <=64KiB through a
+# pipe in the forked child before exec, with no reader on the other end. On
+# macOS under pipe-KVA pressure a fresh pipe gets a 512-byte buffer, so any
+# body >=512B blocks write() forever and the script hangs at startup with no
+# output. Compat level 50 restores the tempfile path. These scripts are
+# bash-3.2-clean, so the compat level costs them nothing. Not exported: the
+# guard is per-script, and it survives `bash script.sh` call sites that
+# bypass the shebang.
+BASH_COMPAT=50
+
+set -euo pipefail
+
+MODE="${1:-}"
+
+if [ "$MODE" != "optional" ] && [ "$MODE" != "required" ]; then
+  echo "Usage: gaganfoxwell-team-init {optional|required}" >&2
+  echo "" >&2
+  echo "  optional  — suggest gaganfoxwell install once per developer (gentle)" >&2
+  echo "  required  — enforce gaganfoxwell install, block work without it" >&2
+  exit 1
+fi
+
+# Must be in a git repo
+if ! git rev-parse --show-toplevel >/dev/null 2>&1; then
+  echo "Error: not in a git repository. Run from your project root." >&2
+  exit 1
+fi
+
+REPO_ROOT=$(git rev-parse --show-toplevel)
+CLAUDE_MD="$REPO_ROOT/CLAUDE.md"
+GENERATED=()
+
+# ── Migrate vendored copy if present ──────────────────────────
+
+if [ -d "$REPO_ROOT/.claude/skills/gaganfoxwell" ] && [ ! -L "$REPO_ROOT/.claude/skills/gaganfoxwell" ]; then
+  if [ -f "$REPO_ROOT/.claude/skills/gaganfoxwell/VERSION" ] || [ -d "$REPO_ROOT/.claude/skills/gaganfoxwell/.git" ]; then
+    echo "  Found vendored gaganfoxwell copy at $REPO_ROOT/.claude/skills/gaganfoxwell"
+    echo "  Team mode uses the global install — removing vendored copy..."
+    ( cd "$REPO_ROOT" && git rm -r --cached .claude/skills/gaganfoxwell/ 2>/dev/null ) || true
+    if [ -f "$REPO_ROOT/.gitignore" ]; then
+      if ! grep -qF '.claude/skills/gaganfoxwell/' "$REPO_ROOT/.gitignore" 2>/dev/null; then
+        echo '.claude/skills/gaganfoxwell/' >> "$REPO_ROOT/.gitignore"
+      fi
+    else
+      echo '.claude/skills/gaganfoxwell/' > "$REPO_ROOT/.gitignore"
+    fi
+    rm -rf "$REPO_ROOT/.claude/skills/gaganfoxwell"
+    GENERATED+=(".gitignore")
+    echo "  Removed vendored copy and added .claude/skills/gaganfoxwell/ to .gitignore"
+  fi
+fi
+
+# ── CLAUDE.md snippet ──────────────────────────────────────────
+
+if [ "$MODE" = "optional" ]; then
+  SNIPPET='## gaganfoxwell (recommended)
+
+This project uses [gaganfoxwell](https://github.com/Gagan-k0/baton-gaganfoxwel.git) for AI-assisted workflows.
+Install it for the best experience:
+
+```bash
+git clone --depth 1 https://github.com/Gagan-k0/baton-gaganfoxwel.git ~/.claude/skills/gaganfoxwell
+cd ~/.claude/skills/gaganfoxwell && ./setup --team
+```
+
+Skills like /qa, /ship, /review, /investigate, and /browse become available after install.
+Use /browse for all web browsing. Use ~/.claude/skills/gaganfoxwell/... for gaganfoxwell file paths.'
+else
+  SNIPPET='## gaganfoxwell (REQUIRED — global install)
+
+**Before doing ANY work, verify gaganfoxwell is installed:**
+
+```bash
+_GS=""
+for _D in "${GAGANFOXWELL_ROOT:-}" "$HOME/.claude/skills/gaganfoxwell" "$HOME/.codex/skills/gaganfoxwell" "$HOME/.factory/skills/gaganfoxwell" "$HOME/.kiro/skills/gaganfoxwell" "$HOME/.config/opencode/skills/gaganfoxwell" "$HOME/.slate/skills/gaganfoxwell" "$HOME/.cursor/skills/gaganfoxwell" "$HOME/.openclaw/skills/gaganfoxwell" "$HOME/.hermes/skills/gaganfoxwell" "$HOME/.gbrain/skills/gaganfoxwell" "$HOME/.gaganfoxwell/repos/gaganfoxwell"; do
+  [ -z "$_GS" ] && [ -n "$_D" ] && [ -d "$_D/bin" ] && _GS="$_D"
+done
+[ -n "$_GS" ] && echo "GAGANFOXWELL_OK: $_GS" || echo "GAGANFOXWELL_MISSING"
+```
+
+If GAGANFOXWELL_MISSING: STOP. Do not proceed. Tell the user:
+
+> gaganfoxwell is required for all AI-assisted work in this repo.
+> Install it:
+> ```bash
+> git clone --depth 1 https://github.com/Gagan-k0/baton-gaganfoxwel.git ~/.claude/skills/gaganfoxwell
+> cd ~/.claude/skills/gaganfoxwell && ./setup --team
+> ```
+> Then restart your AI coding tool.
+
+Do not skip skills, ignore gaganfoxwell errors, or work around missing gaganfoxwell.
+
+Using gaganfoxwell skills: After install, skills like /qa, /ship, /review, /investigate,
+and /browse are available. Use /browse for all web browsing.
+Use the resolved install path above for gaganfoxwell file paths
+(default: ~/.claude/skills/gaganfoxwell).'
+fi
+
+# Check if CLAUDE.md already has a gaganfoxwell section
+if [ -f "$CLAUDE_MD" ] && grep -q "## gaganfoxwell" "$CLAUDE_MD" 2>/dev/null; then
+  echo "CLAUDE.md already has a gaganfoxwell section. Skipping CLAUDE.md update."
+  echo "  To replace it, remove the existing ## gaganfoxwell section and re-run."
+else
+  if [ -f "$CLAUDE_MD" ]; then
+    echo "" >> "$CLAUDE_MD"
+  fi
+  echo "$SNIPPET" >> "$CLAUDE_MD"
+  GENERATED+=("CLAUDE.md")
+  echo "  + CLAUDE.md — added gaganfoxwell $MODE section"
+fi
+
+# ── Required mode: enforcement hook ────────────────────────────
+
+if [ "$MODE" = "required" ]; then
+  HOOKS_DIR="$REPO_ROOT/.claude/hooks"
+  SETTINGS="$REPO_ROOT/.claude/settings.json"
+
+  # Create enforcement hook script
+  mkdir -p "$HOOKS_DIR"
+  cat > "$HOOKS_DIR/check-gaganfoxwell.sh" << 'HOOK_EOF'
+#!/bin/bash
+# Block skill usage when gaganfoxwell is not installed globally.
+#
+# Resolve the install root the way gaganfoxwell skill preambles do: the GAGANFOXWELL_ROOT
+# env var first, then every host's global install location, then the migrated
+# repo location. Block only when NONE exist (#2500 — hardcoding
+# ~/.claude/skills/gaganfoxwell false-blocked Codex-host and migrated-repo installs).
+_GAGANFOXWELL_ROOT=""
+for _D in "${GAGANFOXWELL_ROOT:-}" "$HOME/.claude/skills/gaganfoxwell" "$HOME/.codex/skills/gaganfoxwell" "$HOME/.factory/skills/gaganfoxwell" "$HOME/.kiro/skills/gaganfoxwell" "$HOME/.config/opencode/skills/gaganfoxwell" "$HOME/.slate/skills/gaganfoxwell" "$HOME/.cursor/skills/gaganfoxwell" "$HOME/.openclaw/skills/gaganfoxwell" "$HOME/.hermes/skills/gaganfoxwell" "$HOME/.gbrain/skills/gaganfoxwell" "$HOME/.gaganfoxwell/repos/gaganfoxwell"; do
+  [ -z "$_GAGANFOXWELL_ROOT" ] && [ -n "$_D" ] && [ -d "$_D/bin" ] && _GAGANFOXWELL_ROOT="$_D"
+done
+
+if [ -z "$_GAGANFOXWELL_ROOT" ]; then
+  cat >&2 <<'MSG'
+BLOCKED: gaganfoxwell is not installed globally.
+
+gaganfoxwell is required for AI-assisted work in this repo.
+
+Install it:
+  git clone --depth 1 https://github.com/Gagan-k0/baton-gaganfoxwel.git ~/.claude/skills/gaganfoxwell
+  cd ~/.claude/skills/gaganfoxwell && ./setup --team
+
+Then restart your AI coding tool.
+MSG
+  echo '{"hookSpecificOutput":{"hookEventName":"PreToolUse","permissionDecision":"deny","permissionDecisionReason":"gaganfoxwell is required but not installed. See stderr for install instructions."}}'
+  exit 2
+fi
+
+echo '{}'
+HOOK_EOF
+  chmod +x "$HOOKS_DIR/check-gaganfoxwell.sh"
+  GENERATED+=(".claude/hooks/check-gaganfoxwell.sh")
+  echo "  + .claude/hooks/check-gaganfoxwell.sh — enforcement hook"
+
+  # Add hook to project-level settings.json
+  if command -v bun >/dev/null 2>&1; then
+    GAGANFOXWELL_SETTINGS_PATH="$SETTINGS" bun -e "
+      const fs = require('fs');
+      const settingsPath = process.env.GAGANFOXWELL_SETTINGS_PATH;
+
+      let settings = {};
+      try { settings = JSON.parse(fs.readFileSync(settingsPath, 'utf8')); } catch {}
+
+      if (!settings.hooks) settings.hooks = {};
+      if (!settings.hooks.PreToolUse) settings.hooks.PreToolUse = [];
+
+      // Dedup
+      const exists = settings.hooks.PreToolUse.some(entry =>
+        entry.matcher === 'Skill' &&
+        entry.hooks && entry.hooks.some(h => h.command && h.command.includes('check-gaganfoxwell'))
+      );
+
+      if (!exists) {
+        settings.hooks.PreToolUse.push({
+          matcher: 'Skill',
+          hooks: [{
+            type: 'command',
+            command: '\"\$CLAUDE_PROJECT_DIR/.claude/hooks/check-gaganfoxwell.sh\"'
+          }]
+        });
+      }
+
+      const tmp = settingsPath + '.tmp';
+      fs.writeFileSync(tmp, JSON.stringify(settings, null, 2) + '\n');
+      fs.renameSync(tmp, settingsPath);
+    " 2>/dev/null
+    GENERATED+=(".claude/settings.json")
+    echo "  + .claude/settings.json — PreToolUse hook registered"
+  else
+    echo "  ! bun not found — manually add the PreToolUse hook to .claude/settings.json"
+  fi
+fi
+
+# ── Summary ────────────────────────────────────────────────────
+
+echo ""
+echo "Team mode ($MODE) initialized."
+echo ""
+if [ ${#GENERATED[@]} -gt 0 ]; then
+  echo "Commit the generated files:"
+  echo "  git add ${GENERATED[*]}"
+  echo "  git commit -m \"chore: require gaganfoxwell for AI-assisted work\""
+fi
+echo ""
+echo "Each developer then runs:"
+echo "  git clone --depth 1 https://github.com/Gagan-k0/baton-gaganfoxwel.git ~/.claude/skills/gaganfoxwell"
+echo "  cd ~/.claude/skills/gaganfoxwell && ./setup --team"

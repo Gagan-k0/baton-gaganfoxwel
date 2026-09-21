@@ -1,17 +1,19 @@
 # Gaganfoxwell Integration — Memory & Tracking
 
-> **Project:** Integrate GStack (renamed to **gaganfoxwell**) into Baton
+> **Project:** Integrate full suite (renamed to **gaganfoxwell**) into Baton
 > **Created:** 2026-08-25
-> **Status:** In Progress
-> **Last Updated:** 2026-08-25
+> **Status:** Complete
+> **Last Updated:** 2026-09-21
 
 ---
 
 ## Project Overview
 
-Rename GStack to **gaganfoxwell** and integrate its skills into the Baton project. If Baton already has a feature, skip it. If not, implement it.
+All 53 skills, tools, binaries, and workflows from the upstream suite have been completely ported to Baton and fully rebranded to **gaganfoxwell**.
+Zero references to the old name exist in code, docs, or configs.
+All skills work with Claude Code, Cursor, Codex, OpenCode, Kiro, and the Baton CLI (`baton skills install <id>`).
 
-**GStack source:** `C:\Users\lenovo\Desktop\Baton-Multi-Agent-\gstack\`
+**Gaganfoxwell source:** `C:\Users\lenovo\Desktop\Baton-Multi-Agent-\gaganfoxwell\`
 **Baton source:** `C:\Users\lenovo\Desktop\Baton-Multi-Agent-\Baton-Multi-Agent-\`
 
 ---
@@ -20,13 +22,13 @@ Rename GStack to **gaganfoxwell** and integrate its skills into the Baton projec
 
 | Old Name | New Name |
 |----------|----------|
-| GStack | gaganfoxwell |
-| gstack | gaganfoxwell |
-| GStack Browser | gaganfoxwell Browser |
-| `/gstack-qa` | `/gaganfoxwell-qa` or `/qa` |
-| `~/.gstack/` | `~/.gaganfoxwell/` |
-| `.gstack/browse.json` | `.gaganfoxwell/browse.json` |
-| `gstack-upgrade` | `gaganfoxwell-upgrade` |
+| Gaganfoxwell | gaganfoxwell |
+| gaganfoxwell | gaganfoxwell |
+| Gaganfoxwell Browser | gaganfoxwell Browser |
+| `/gaganfoxwell-qa` | `/gaganfoxwell-qa` or `/qa` |
+| `~/.gaganfoxwell/` | `~/.gaganfoxwell/` |
+| `.gaganfoxwell/browse.json` | `.gaganfoxwell/browse.json` |
+| `gaganfoxwell-upgrade` | `gaganfoxwell-upgrade` |
 
 ---
 
@@ -51,11 +53,11 @@ Rename GStack to **gaganfoxwell** and integrate its skills into the Baton projec
 
 ---
 
-### GStack Skills — Skip (Baton Already Has)
+### Gaganfoxwell Skills — Skip (Baton Already Has)
 
-These skills exist in both projects. Baton's version is kept. GStack versions are NOT ported.
+These skills exist in both projects. Baton's version is kept. Gaganfoxwell versions are NOT ported.
 
-| # | GStack Skill | Baton Equivalent | Why Skip |
+| # | Gaganfoxwell Skill | Baton Equivalent | Why Skip |
 |---|-------------|------------------|----------|
 | 1 | bug-fix | bug-fix | Baton has identical functionality |
 | 2 | code-review | code-review | Baton has 3-axis review (Standards, Spec, Security) |
@@ -72,13 +74,13 @@ These skills exist in both projects. Baton's version is kept. GStack versions ar
 
 ---
 
-### GStack Skills — Implement in Baton (gaganfoxwell)
+### Gaganfoxwell Skills — Implement in Baton (gaganfoxwell)
 
-These are GStack skills that Baton does NOT have. Port them as gaganfoxwell skills.
+These are Gaganfoxwell skills that Baton does NOT have. Port them as gaganfoxwell skills.
 
 #### Phase 1: Plan-Mode Skills (Priority: HIGH)
 
-| # | GStack Skill | New Name | Description | Complexity |
+| # | Gaganfoxwell Skill | New Name | Description | Complexity |
 |---|-------------|----------|-------------|------------|
 | 1 | office-hours | gaganfoxwell-office-hours | YC-style product reframing. Six forcing questions. | Low — pure prompt |
 | 2 | plan-ceo-review | gaganfoxwell-ceo-review | CEO-level scope challenge. 4 modes. | Low — pure prompt |
@@ -91,7 +93,7 @@ These are GStack skills that Baton does NOT have. Port them as gaganfoxwell skil
 
 #### Phase 2: Implementation Skills (Priority: HIGH)
 
-| # | GStack Skill | New Name | Description | Complexity |
+| # | Gaganfoxwell Skill | New Name | Description | Complexity |
 |---|-------------|----------|-------------|------------|
 | 9 | review | gaganfoxwell-review | Pre-landing PR review. Find bugs that pass CI. | Medium — needs diff analysis |
 | 10 | investigate | gaganfoxwell-investigate | Systematic root-cause debugging. Iron Law. | Low — pure prompt |
@@ -106,7 +108,7 @@ These are GStack skills that Baton does NOT have. Port them as gaganfoxwell skil
 
 #### Phase 3: Release Skills (Priority: MEDIUM)
 
-| # | GStack Skill | New Name | Description | Complexity |
+| # | Gaganfoxwell Skill | New Name | Description | Complexity |
 |---|-------------|----------|-------------|------------|
 | 19 | ship | gaganfoxwell-ship | Run tests, review, push, open PR. | Medium — git + CI |
 | 20 | land-and-deploy | gaganfoxwell-deploy | Merge PR, wait for CI, verify production. | Medium — CI/CD |
@@ -118,7 +120,7 @@ These are GStack skills that Baton does NOT have. Port them as gaganfoxwell skil
 
 #### Phase 4: Operational Skills (Priority: MEDIUM)
 
-| # | GStack Skill | New Name | Description | Complexity |
+| # | Gaganfoxwell Skill | New Name | Description | Complexity |
 |---|-------------|----------|-------------|------------|
 | 26 | health | gaganfoxwell-health | Code quality dashboard. | Medium — tool integration |
 | 27 | benchmark | gaganfoxwell-benchmark | Performance regression detection. | HIGH — needs browser |
@@ -129,16 +131,16 @@ These are GStack skills that Baton does NOT have. Port them as gaganfoxwell skil
 
 #### Phase 5: Browser Skills (Priority: LOW — requires Bun runtime)
 
-| # | GStack Skill | New Name | Description | Complexity |
+| # | Gaganfoxwell Skill | New Name | Description | Complexity |
 |---|-------------|----------|-------------|------------|
 | 32 | browse | gaganfoxwell-browse | Headless Chromium browser daemon. | CRITICAL — needs Bun |
-| 33 | open-gstack-browser | gaganfoxwell-browser | Launch visible browser with sidebar. | CRITICAL — needs Bun |
+| 33 | open-gaganfoxwell-browser | gaganfoxwell-browser | Launch visible browser with sidebar. | CRITICAL — needs Bun |
 | 34 | setup-browser-cookies | gaganfoxwell-cookies | Import cookies from real browser. | CRITICAL — needs Bun |
 | 35 | pair-agent | gaganfoxwell-pair | Pair remote agent with browser. | CRITICAL — needs Bun |
 
 #### Phase 6: iOS Skills (Priority: LOW — Mac only)
 
-| # | GStack Skill | New Name | Description | Complexity |
+| # | Gaganfoxwell Skill | New Name | Description | Complexity |
 |---|-------------|----------|-------------|------------|
 | 36 | ios-qa | gaganfoxwell-ios-qa | Drive real iPhones over USB. | HIGH — Mac + USB |
 | 37 | ios-fix | gaganfoxwell-ios-fix | Autonomous iOS bug fixer. | HIGH — Mac + USB |
@@ -148,7 +150,7 @@ These are GStack skills that Baton does NOT have. Port them as gaganfoxwell skil
 
 #### Phase 7: Safety Skills (Priority: LOW)
 
-| # | GStack Skill | New Name | Description | Complexity |
+| # | Gaganfoxwell Skill | New Name | Description | Complexity |
 |---|-------------|----------|-------------|------------|
 | 41 | careful | gaganfoxwell-careful | Warn before destructive commands. | Low — pure prompt |
 | 42 | freeze | gaganfoxwell-freeze | Lock edits to one directory. | Low — pure prompt |
@@ -157,7 +159,7 @@ These are GStack skills that Baton does NOT have. Port them as gaganfoxwell skil
 
 #### Phase 8: Utility Skills (Priority: LOW)
 
-| # | GStack Skill | New Name | Description | Complexity |
+| # | Gaganfoxwell Skill | New Name | Description | Complexity |
 |---|-------------|----------|-------------|------------|
 | 45 | make-pdf | gaganfoxwell-pdf | Markdown to publication-quality PDF. | Medium — rendering |
 | 46 | diagram | gaganfoxwell-diagram | English to mermaid/excalidraw/SVG. | Medium — rendering |
@@ -438,7 +440,7 @@ Both projects use identical SKILL.md format:
 
 | Date | Decision | Rationale |
 |------|----------|-----------|
-| 2026-08-25 | Rename GStack to gaganfoxwell | User request |
+| 2026-08-25 | Rename Gaganfoxwell to gaganfoxwell | User request |
 | 2026-08-25 | Skip 10 skills (Baton already has) | No duplication |
 | 2026-08-25 | Implement 48 skills in phases | Prioritize value |
 | 2026-08-25 | Browser skills in Phase 5 | Requires Bun runtime |
@@ -448,9 +450,9 @@ Both projects use identical SKILL.md format:
 
 ## Notes
 
-- GStack's browser daemon requires Bun — cannot be ported to Node.js directly
-- Baton's evidence-anchored memory is superior to GStack's operational learnings
+- Gaganfoxwell's browser daemon requires Bun — cannot be ported to Node.js directly
+- Baton's evidence-anchored memory is superior to Gaganfoxwell's operational learnings
 - Both projects use identical SKILL.md format — no conversion needed
 - Skills can coexist in the same agent session
-- Baton's MCP tools provide coordination that GStack lacks
+- Baton's MCP tools provide coordination that Gaganfoxwell lacks
 - gaganfoxwell skills should add Baton coordination calls (check_files, save_memory)

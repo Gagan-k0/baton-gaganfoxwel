@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# gaganfoxwell-builder-profile — LEGACY SHIM.
+#
+# Superseded by bin/gaganfoxwell-developer-profile. This binary now delegates to
+# `gaganfoxwell-developer-profile --read` to keep /office-hours working during the
+# transition. When all call sites have been updated, this file can be removed.
+#
+# The migration from ~/.gaganfoxwell/builder-profile.jsonl to the unified
+# ~/.gaganfoxwell/developer-profile.json happens automatically on first read —
+# see bin/gaganfoxwell-developer-profile --migrate for details.
+set -euo pipefail
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+exec "$SCRIPT_DIR/gaganfoxwell-developer-profile" --read "$@"
